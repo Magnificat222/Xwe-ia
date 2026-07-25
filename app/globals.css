@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/*
+  Design tokens — MABIDOUZ AI Hub
+  Palette (from brief): noir profond, blanc cassé, doré élégant, violet foncé.
+  Display face: Fraunces (editorial serif, used sparingly for headlines)
+  Body face: Inter
+  Utility/mono face: IBM Plex Mono (prompts, stats, code)
+*/
+@theme {
+  --color-noir: #0a0a0d;
+  --color-noir-soft: #131318;
+  --color-noir-elevated: #1b1b22;
+  --color-ivoire: #f3efe8;
+  --color-ivoire-dim: #cfcac0;
+  --color-or: #c9a24b;
+  --color-or-vif: #e6c675;
+  --color-violet: #241238;
+  --color-violet-soft: #3a1f57;
+
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --radius-card: 0.75rem;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-noir);
+  color: var(--color-ivoire);
+  font-family: var(--font-body);
+}
+
+::selection {
+  background-color: var(--color-or);
+  color: var(--color-noir);
+}
+
+/* Signature element: the "trajectoire" — a stepped path connecting mission
+   nodes, used on the landing hero to literalize "objectif -> missions ->
+   résultat". Order here is real (a guided sequence), so numbering earns
+   its place. */
+.trajectoire-line {
+  background: linear-gradient(
+    180deg,
+    var(--color-or) 0%,
+    var(--color-violet-soft) 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

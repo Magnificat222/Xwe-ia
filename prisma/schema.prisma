@@ -1,0 +1,230 @@
+// Xwé IA — Prisma schema
+// Run `npx prisma db push` after setting DATABASE_URL in .env
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum MissionLevel {
+  DEBUTANT
+  INTERMEDIAIRE
+  AVANCE
+}
+
+enum SubscriptionPlan {
+  FREE
+  PREMIUM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  TRIALING
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String? // hashed with bcrypt; null when using OAuth
+  image         String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  favorites     Favorite[]
+  progress      Progress[]
+  history       History[]
+  subscription  Subscription?
+  accounts      Account[]
+  sessions      Session[]
+}
+
+// --- NextAuth / Auth.js required models ---
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+// --- end Auth.js models ---
+
+model Category {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  description String
+  icon        String
+  missions    Mission[]
+}
+
+model Mission {
+  id                String       @id @default(cuid())
+  slug              String       @unique
+  title             String
+  description       String       @db.Text
+  level             MissionLevel @default(DEBUTANT)
+  estimatedMinutes  Int
+  recommendedTools  String[] // Tool ids, denormalized for quick display
+  steps             Json // MissionStep[]
+  tips              String[]
+  commonMistakes    String[]
+  checklist         String[]
+  isPremium         Boolean      @default(false)
+  isPublished       Boolean      @default(false)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  paths      LearningPathMission[]
+  favorites  Favorite[]
+  progress   Progress[]
+  history    History[]
+}
+
+model LearningPath {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String   @db.Text
+  isPremium   Boolean  @default(false)
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  missions  LearningPathMission[]
+  favorites Favorite[]
+}
+
+// Explicit join table so missions can be ordered within a path
+model LearningPathMission {
+  id             String       @id @default(cuid())
+  order          Int
+  learningPathId String
+  missionId      String
+
+  learningPath LearningPath @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
+  mission      Mission      @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@unique([learningPathId, missionId])
+}
+
+model Prompt {
+  id         String   @id @default(cuid())
+  title      String
+  content    String   @db.Text
+  tags       String[]
+  isPremium  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  categoryId String
+  favorites  Favorite[]
+}
+
+model Tool {
+  id          String   @id @default(cuid())
+  name        String
+  description String   @db.Text
+  useCases    String[]
+  pricing     String
+  features    String[]
+  url         String
+
+  favorites Favorite[]
+}
+
+// Polymorphic-style favorites: exactly one target field is set per row.
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  createdAt DateTime @default(now())
+
+  missionId      String?
+  learningPathId String?
+  promptId       String?
+  toolId         String?
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mission      Mission?      @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  learningPath LearningPath? @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
+  prompt       Prompt?       @relation(fields: [promptId], references: [id], onDelete: Cascade)
+  tool         Tool?         @relation(fields: [toolId], references: [id], onDelete: Cascade)
+}
+
+model Progress {
+  id          String   @id @default(cuid())
+  userId      String
+  missionId   String
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, missionId])
+}
+
+model History {
+  id        String   @id @default(cuid())
+  userId    String
+  missionId String
+  viewedAt  DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  plan                 SubscriptionPlan   @default(FREE)
+  status               SubscriptionStatus @default(ACTIVE)
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?            @unique
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
