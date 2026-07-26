@@ -1,11 +1,22 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-// TODO: hydrate from auth() session + prisma.user.findUnique(...)
-const mockUser = { name: "Fide", email: "fide@example.com", plan: "FREE" as const };
+export default async function ProfilePage() {
+  const session = await auth();
+  if (!session?.user?.id) redirect("/login?callbackUrl=/profile");
 
-export default function ProfilePage() {
+  const [user, subscription] = await Promise.all([
+    prisma.user.findUnique({ where: { id: session.user.id } }),
+    prisma.subscription.findUnique({ where: { userId: session.user.id } }),
+  ]);
+
+  const isPremium = subscription?.plan === "PREMIUM";
+
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
@@ -16,17 +27,19 @@ export default function ProfilePage() {
       <Card>
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <p className="font-display text-lg text-ivoire">{mockUser.name}</p>
-            <p className="text-sm text-ivoire-dim">{mockUser.email}</p>
+            <p className="font-display text-lg text-ivoire">{user?.name ?? "Sans nom"}</p>
+            <p className="text-sm text-ivoire-dim">{user?.email}</p>
           </div>
-          {mockUser.plan === "PREMIUM" ? (
+          {isPremium ? (
             <Badge tone="gold">Premium</Badge>
           ) : (
             <Badge>Gratuit</Badge>
           )}
         </div>
-        {mockUser.plan === "FREE" && (
-          <Button size="sm">Passer Premium</Button>
+        {!isPremium && (
+          <Link href="/#tarifs">
+            <Button size="sm">Passer Premium</Button>
+          </Link>
         )}
       </Card>
 
@@ -38,7 +51,7 @@ export default function ProfilePage() {
               Nom
             </label>
             <input
-              defaultValue={mockUser.name}
+              defaultValue={user?.name ?? ""}
               className="w-full rounded-lg border border-ivoire/15 bg-noir px-3.5 py-2.5 text-sm text-ivoire outline-none focus:border-or"
             />
           </div>
