@@ -5,9 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
 import { formatMinutes } from "@/lib/utils";
 
-export default async function ParcoursDetailPage({ params }: { params: { slug: string } }) {
+export default async function ParcoursDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const path = await prisma.learningPath.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     include: { missions: { include: { mission: true }, orderBy: { order: "asc" } } },
   });
 

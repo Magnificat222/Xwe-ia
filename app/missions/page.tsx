@@ -6,13 +6,14 @@ import type { Mission } from "@/types";
 export default async function MissionsPage({
   searchParams,
 }: {
-  searchParams: { categorie?: string };
+  searchParams: Promise<{ categorie?: string }>;
 }) {
+  const { categorie } = await searchParams;
   const [dbMissions, categories] = await Promise.all([
     prisma.mission.findMany({
       where: {
         isPublished: true,
-        ...(searchParams.categorie ? { category: { slug: searchParams.categorie } } : {}),
+        ...(categorie ? { category: { slug: categorie } } : {}),
       },
       include: { category: true },
       orderBy: { createdAt: "desc" },

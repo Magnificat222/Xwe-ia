@@ -8,8 +8,13 @@ import { CheckCircle2, Lightbulb, AlertTriangle, Clock } from "lucide-react";
 import type { MissionStep } from "@/types";
 import { FavoriteMissionButton } from "@/components/missions/favorite-mission-button";
 
-export default async function MissionDetailPage({ params }: { params: { slug: string } }) {
-  const mission = await prisma.mission.findUnique({ where: { slug: params.slug } });
+export default async function MissionDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const mission = await prisma.mission.findUnique({ where: { slug } });
   if (!mission) notFound();
 
   const session = await auth();

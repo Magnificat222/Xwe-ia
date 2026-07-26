@@ -4,8 +4,13 @@ import { prisma } from "@/lib/prisma";
 import { SupportChat } from "@/components/dashboard/support-chat";
 import { ArrowLeft } from "lucide-react";
 
-export default async function AdminSupportThreadPage({ params }: { params: { userId: string } }) {
-  const user = await prisma.user.findUnique({ where: { id: params.userId } });
+export default async function AdminSupportThreadPage({
+  params,
+}: {
+  params: Promise<{ userId: string }>;
+}) {
+  const { userId } = await params;
+  const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) notFound();
 
   return (
