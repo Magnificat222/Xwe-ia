@@ -22,7 +22,7 @@ const plans = [
   },
   {
     name: "Premium",
-    price: "12",
+    price: "04",
     description: "Pour aller jusqu'au résultat, sur tous vos objectifs.",
     features: [
       "Toutes les missions et parcours",
