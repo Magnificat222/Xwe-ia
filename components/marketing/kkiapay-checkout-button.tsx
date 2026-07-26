@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-const PREMIUM_AMOUNT_XOF = 2623; // ~04€ converti en Francs CFA, ajuste au besoin
+const PREMIUM_AMOUNT_XOF = 3200; // ~05€ converti en Francs CFA, ajuste au besoin
 
 export function KkiapayCheckoutButton() {
   const router = useRouter();

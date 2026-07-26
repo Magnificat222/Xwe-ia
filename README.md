@@ -113,6 +113,16 @@ L'application est accessible sur http://localhost:3000.
   déjà posé sur la page de détail d'une mission, et `/favoris` liste tout.
 - **Historique** : chaque visite d'une page de mission par un utilisateur
   connecté crée une entrée `History`, utilisée sur le tableau de bord.
+- **Contenu** : 36 missions (2 gratuites + 2 premium par catégorie, sur les 9
+  catégories), avec le parcours "Développer un projet professionnel" passé en
+  Premium. Le gratuit sert de vitrine, le Premium concentre la majorité de la
+  valeur — pense à garder ce ratio quand tu ajoutes du contenu.
+- **Chat Support Premium** : `/support` (utilisateur) et `/admin/support`
+  (toi). Réservé aux abonnés Premium — un utilisateur gratuit qui visite
+  `/support` voit un écran d'incitation à l'abonnement plutôt que le chat.
+  Le chat interroge le serveur toutes les 5 secondes (`SupportChat`
+  component) ; ce n'est pas du temps réel instantané, mais suffisant pour un
+  usage asynchrone de type messagerie de support.
 
 ## Pour créer ton premier compte admin
 

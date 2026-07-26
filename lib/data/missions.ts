@@ -1,13 +1,12 @@
 import type { Mission } from "@/types";
 
 export const missions: Mission[] = [
-  // --- Business ---
+  // --- Business (2 gratuites, 2 premium) ---
   {
     id: "m-business-plan",
     slug: "creer-un-business-plan",
     title: "Créer un business plan",
-    description:
-      "Structurez un business plan clair et convaincant, étape par étape, avec l'IA comme copilote.",
+    description: "Structurez un business plan clair et convaincant, étape par étape, avec l'IA comme copilote.",
     categorySlug: "business",
     level: "DEBUTANT",
     estimatedMinutes: 90,
@@ -21,6 +20,25 @@ export const missions: Mission[] = [
     tips: ["Rester concret : chaque section doit répondre à une décision à prendre."],
     commonMistakes: ["Vouloir tout couvrir avant d'avoir validé le problème."],
     checklist: ["Problème validé", "Marché estimé", "Modèle économique chiffré", "Document relu"],
+    isPremium: false,
+  },
+  {
+    id: "m-valider-idee",
+    slug: "valider-une-idee-avant-de-se-lancer",
+    title: "Valider une idée avant de se lancer",
+    description: "Testez la solidité de votre idée avant d'y investir temps et argent.",
+    categorySlug: "business",
+    level: "DEBUTANT",
+    estimatedMinutes: 60,
+    recommendedTools: ["tool-chatgpt", "tool-perplexity"],
+    steps: [
+      { id: "s1", title: "Formuler l'hypothèse", content: "Écrire l'idée en une phrase testable : \"Je pense que [cible] a besoin de [solution]\"." },
+      { id: "s2", title: "Interroger 5 personnes", content: "Poser des questions ouvertes à 5 personnes de la cible, sans vendre l'idée." },
+      { id: "s3", title: "Décider", content: "Garder, ajuster ou abandonner l'idée selon les retours obtenus." },
+    ],
+    tips: ["Cherchez à être contredite, pas confirmée."],
+    commonMistakes: ["Poser des questions qui orientent vers la réponse qu'on espère entendre."],
+    checklist: ["Hypothèse formulée", "5 entretiens menés", "Décision prise"],
     isPremium: false,
   },
   {
@@ -42,8 +60,28 @@ export const missions: Mission[] = [
     checklist: ["Idée validée", "Offre définie", "Premier client contacté"],
     isPremium: true,
   },
+  {
+    id: "m-lever-fonds",
+    slug: "lever-des-fonds-pour-son-entreprise",
+    title: "Lever des fonds pour son entreprise",
+    description: "Préparez un dossier solide et une présentation qui donnent envie d'investir.",
+    categorySlug: "business",
+    level: "AVANCE",
+    estimatedMinutes: 200,
+    recommendedTools: ["tool-claude", "tool-chatgpt"],
+    steps: [
+      { id: "s1", title: "Chiffrer le besoin", content: "Déterminer précisément le montant recherché et son utilisation." },
+      { id: "s2", title: "Construire le pitch deck", content: "Structurer une présentation en 10-12 slides maximum." },
+      { id: "s3", title: "Anticiper les objections", content: "Préparer des réponses aux questions difficiles sur la traction et la rentabilité." },
+      { id: "s4", title: "Cibler les bons investisseurs", content: "Identifier des investisseurs pertinents pour le secteur et le stade du projet." },
+    ],
+    tips: ["Un investisseur finance une trajectoire, pas seulement une idée — montrez la progression."],
+    commonMistakes: ["Présenter un pitch deck trop long ou trop technique."],
+    checklist: ["Montant justifié", "Pitch deck construit", "Objections anticipées", "Liste d'investisseurs ciblés"],
+    isPremium: true,
+  },
 
-  // --- Marketing ---
+  // --- Marketing (2 gratuites, 2 premium) ---
   {
     id: "m-personal-branding",
     slug: "developper-son-personal-branding",
@@ -61,6 +99,25 @@ export const missions: Mission[] = [
     tips: ["La régularité compte plus que la perfection de chaque post."],
     commonMistakes: ["Changer de positionnement toutes les semaines."],
     checklist: ["Positionnement écrit", "3 formats définis", "Calendrier créé"],
+    isPremium: false,
+  },
+  {
+    id: "m-newsletter",
+    slug: "creer-une-newsletter-qui-engage",
+    title: "Créer une newsletter qui engage",
+    description: "Lancez une newsletter simple et régulière qui donne envie d'être lue chaque fois.",
+    categorySlug: "marketing",
+    level: "DEBUTANT",
+    estimatedMinutes: 70,
+    recommendedTools: ["tool-chatgpt"],
+    steps: [
+      { id: "s1", title: "Choisir un angle unique", content: "Définir ce que votre newsletter apporte que les autres n'apportent pas." },
+      { id: "s2", title: "Structurer un format fixe", content: "Créer une structure répétable (3-4 sections) que les lecteurs reconnaissent." },
+      { id: "s3", title: "Écrire le premier numéro", content: "Rédiger un numéro court et utile plutôt qu'exhaustif." },
+    ],
+    tips: ["Une newsletter courte et régulière bat une newsletter longue et irrégulière."],
+    commonMistakes: ["Changer de format à chaque numéro."],
+    checklist: ["Angle défini", "Format fixe créé", "Premier numéro rédigé"],
     isPremium: false,
   },
   {
@@ -83,8 +140,28 @@ export const missions: Mission[] = [
     checklist: ["Objectif mesurable défini", "Message décliné en 3 formats", "Budget réparti", "Indicateurs de suivi en place"],
     isPremium: true,
   },
+  {
+    id: "m-tunnel-vente",
+    slug: "construire-un-tunnel-de-vente-complet",
+    title: "Construire un tunnel de vente complet",
+    description: "Créez un parcours qui transforme un simple visiteur en client, étape par étape.",
+    categorySlug: "marketing",
+    level: "AVANCE",
+    estimatedMinutes: 180,
+    recommendedTools: ["tool-chatgpt", "tool-claude"],
+    steps: [
+      { id: "s1", title: "Cartographier le parcours", content: "Définir chaque étape entre la découverte et l'achat." },
+      { id: "s2", title: "Créer l'aimant à prospects", content: "Concevoir une offre gratuite qui capture l'intérêt d'un visiteur." },
+      { id: "s3", title: "Séquencer les relances", content: "Écrire une série de messages qui accompagnent le prospect vers l'achat." },
+      { id: "s4", title: "Mesurer chaque étape", content: "Identifier où les prospects abandonnent le plus dans le tunnel." },
+    ],
+    tips: ["Un tunnel simple à 3 étapes bien optimisé bat un tunnel complexe à 8 étapes mal suivi."],
+    commonMistakes: ["Construire tout le tunnel avant d'avoir testé la première étape."],
+    checklist: ["Parcours cartographié", "Aimant à prospects créé", "Séquence de relance écrite", "Points d'abandon identifiés"],
+    isPremium: true,
+  },
 
-  // --- Études ---
+  // --- Études (2 gratuites, 2 premium) ---
   {
     id: "m-soutenance",
     slug: "preparer-sa-soutenance",
@@ -102,6 +179,25 @@ export const missions: Mission[] = [
     tips: ["Répéter à voix haute, pas seulement relire."],
     commonMistakes: ["Trop de texte sur les slides."],
     checklist: ["Plan validé", "Slides prêtes", "Questions anticipées"],
+    isPremium: false,
+  },
+  {
+    id: "m-prise-notes-cours",
+    slug: "prendre-des-notes-de-cours-efficacement",
+    title: "Prendre des notes de cours efficacement",
+    description: "Une méthode simple pour capturer l'essentiel sans tout retranscrire mot à mot.",
+    categorySlug: "etudes",
+    level: "DEBUTANT",
+    estimatedMinutes: 40,
+    recommendedTools: ["tool-notion-ai"],
+    steps: [
+      { id: "s1", title: "Noter les idées, pas les phrases", content: "Résumer chaque idée en quelques mots plutôt que de transcrire mot à mot." },
+      { id: "s2", title: "Structurer par question", content: "Formuler chaque section de notes comme une question à laquelle répond le cours." },
+      { id: "s3", title: "Relire dans les 24h", content: "Reprendre les notes le jour même pour les compléter pendant que c'est frais." },
+    ],
+    tips: ["Une note qu'on ne relit jamais ne sert à rien — bloquez 10 minutes après chaque cours."],
+    commonMistakes: ["Essayer de tout écrire au mot près."],
+    checklist: ["Méthode par idées adoptée", "Notes structurées par questions", "Relecture dans les 24h faite"],
     isPremium: false,
   },
   {
@@ -124,8 +220,28 @@ export const missions: Mission[] = [
     checklist: ["Problématique validée par l'encadrant", "Plan détaillé approuvé", "Chaque chapitre relu", "Bibliographie complète"],
     isPremium: true,
   },
+  {
+    id: "m-concours",
+    slug: "preparer-un-concours-ou-examen-national",
+    title: "Préparer un concours ou examen national",
+    description: "Construisez un plan de préparation sur plusieurs mois, avec un suivi de progression réaliste.",
+    categorySlug: "etudes",
+    level: "AVANCE",
+    estimatedMinutes: 200,
+    recommendedTools: ["tool-chatgpt", "tool-claude"],
+    steps: [
+      { id: "s1", title: "Cartographier le programme", content: "Lister toutes les matières et leur coefficient dans la notation finale." },
+      { id: "s2", title: "Planifier par cycles", content: "Répartir la préparation en cycles de révision qui reviennent régulièrement sur chaque matière." },
+      { id: "s3", title: "S'entraîner en conditions réelles", content: "Faire des épreuves blanches chronométrées dès que possible." },
+      { id: "s4", title: "Ajuster selon les résultats", content: "Renforcer les matières les plus faibles à chaque cycle suivant." },
+    ],
+    tips: ["Les épreuves blanches comptent plus que la relecture pure à l'approche de l'examen."],
+    commonMistakes: ["Réviser uniquement les matières qu'on aime, en évitant celles qui posent problème."],
+    checklist: ["Programme cartographié", "Cycles de révision planifiés", "Première épreuve blanche faite", "Ajustements appliqués"],
+    isPremium: true,
+  },
 
-  // --- Création ---
+  // --- Création (2 gratuites, 2 premium) ---
   {
     id: "m-identite-visuelle",
     slug: "creer-une-identite-visuelle",
@@ -143,6 +259,25 @@ export const missions: Mission[] = [
     tips: ["Une identité forte tient sur 3 couleurs maximum."],
     commonMistakes: ["Changer de direction visuelle à chaque nouveau support."],
     checklist: ["3 mots de positionnement définis", "Palette choisie", "Logo et déclinaisons créés"],
+    isPremium: false,
+  },
+  {
+    id: "m-accroche",
+    slug: "ecrire-une-accroche-qui-capte-lattention",
+    title: "Écrire une accroche qui capte l'attention",
+    description: "Apprenez à formuler la première phrase qui donne envie de lire la suite.",
+    categorySlug: "creation",
+    level: "DEBUTANT",
+    estimatedMinutes: 40,
+    recommendedTools: ["tool-chatgpt"],
+    steps: [
+      { id: "s1", title: "Identifier la tension", content: "Trouver le problème ou la curiosité que votre contenu résout." },
+      { id: "s2", title: "Écrire 5 versions", content: "Générer 5 accroches différentes pour le même contenu avant de choisir." },
+      { id: "s3", title: "Tester la plus forte", content: "Choisir la version la plus directe et la plus concrète." },
+    ],
+    tips: ["Une bonne accroche promet quelque chose de précis, pas de vague."],
+    commonMistakes: ["Garder la première idée sans en tester d'autres."],
+    checklist: ["Tension identifiée", "5 versions écrites", "Meilleure version sélectionnée"],
     isPremium: false,
   },
   {
@@ -165,8 +300,28 @@ export const missions: Mission[] = [
     checklist: ["Script validé", "Avatar et voix choisis", "Scènes générées", "Sous-titres vérifiés"],
     isPremium: true,
   },
+  {
+    id: "m-charte-marque",
+    slug: "construire-une-charte-de-marque-complete",
+    title: "Construire une charte de marque complète",
+    description: "Formalisez un document de référence qui garde votre marque cohérente sur tous les supports.",
+    categorySlug: "creation",
+    level: "AVANCE",
+    estimatedMinutes: 160,
+    recommendedTools: ["tool-canva", "tool-claude"],
+    steps: [
+      { id: "s1", title: "Consolider les fondations", content: "Réunir positionnement, palette, typographie et logo déjà validés." },
+      { id: "s2", title: "Définir les règles d'usage", content: "Préciser les usages autorisés et interdits du logo, des couleurs et du ton." },
+      { id: "s3", title: "Créer les gabarits", content: "Produire des modèles prêts à l'emploi pour les supports les plus utilisés." },
+      { id: "s4", title: "Documenter et partager", content: "Rassembler le tout dans un document unique accessible à toute personne qui produit du contenu pour la marque." },
+    ],
+    tips: ["Une charte trop rigide décourage son utilisation — gardez des marges de liberté créative."],
+    commonMistakes: ["Créer une charte que personne ne consulte réellement."],
+    checklist: ["Fondations consolidées", "Règles d'usage définies", "Gabarits créés", "Document final partagé"],
+    isPremium: true,
+  },
 
-  // --- Productivité ---
+  // --- Productivité (2 gratuites, 2 premium) ---
   {
     id: "m-organiser-semaine",
     slug: "organiser-sa-semaine-avec-lia",
@@ -184,6 +339,25 @@ export const missions: Mission[] = [
     tips: ["3 priorités par jour, pas 10 — le reste attendra."],
     commonMistakes: ["Planifier une semaine sans laisser de marge pour les imprévus."],
     checklist: ["Liste complète sortie de la tête", "Tâches priorisées", "3 priorités par jour définies"],
+    isPremium: false,
+  },
+  {
+    id: "m-vaincre-procrastination",
+    slug: "vaincre-la-procrastination-avec-une-methode-simple",
+    title: "Vaincre la procrastination avec une méthode simple",
+    description: "Une approche concrète pour démarrer une tâche qu'on repousse depuis trop longtemps.",
+    categorySlug: "productivite",
+    level: "DEBUTANT",
+    estimatedMinutes: 30,
+    recommendedTools: ["tool-chatgpt"],
+    steps: [
+      { id: "s1", title: "Réduire la tâche", content: "Découper la tâche en une première action de moins de 5 minutes." },
+      { id: "s2", title: "Démarrer sans réfléchir", content: "Faire uniquement cette première action, sans penser au reste de la tâche." },
+      { id: "s3", title: "Enchaîner naturellement", content: "Continuer une fois lancé — le plus dur est souvent de démarrer." },
+    ],
+    tips: ["Le seuil qui bloque n'est presque jamais la tâche entière, juste le premier pas."],
+    commonMistakes: ["Attendre d'être motivé avant de commencer."],
+    checklist: ["Tâche réduite à une première action", "Première action réalisée", "Suite enchaînée"],
     isPremium: false,
   },
   {
@@ -205,8 +379,28 @@ export const missions: Mission[] = [
     checklist: ["Structure définie", "Habitude de capture prise", "Premier tri hebdomadaire fait"],
     isPremium: true,
   },
+  {
+    id: "m-routine-durable",
+    slug: "mettre-en-place-une-routine-de-productivite-durable",
+    title: "Mettre en place une routine de productivité durable",
+    description: "Construisez un système qui tient sur plusieurs mois, pas seulement une semaine motivée.",
+    categorySlug: "productivite",
+    level: "AVANCE",
+    estimatedMinutes: 90,
+    recommendedTools: ["tool-notion-ai", "tool-chatgpt"],
+    steps: [
+      { id: "s1", title: "Auditer l'énergie, pas que le temps", content: "Identifier les moments de la journée où vous êtes le plus efficace." },
+      { id: "s2", title: "Aligner les tâches sur l'énergie", content: "Placer les tâches exigeantes sur les créneaux de haute énergie." },
+      { id: "s3", title: "Prévoir des marges", content: "Laisser volontairement 20% du temps libre pour les imprévus." },
+      { id: "s4", title: "Réviser mensuellement", content: "Ajuster la routine chaque mois selon ce qui a réellement fonctionné." },
+    ],
+    tips: ["Une routine qui ne survit pas à une mauvaise semaine n'est pas assez réaliste."],
+    commonMistakes: ["Copier la routine de quelqu'un d'autre sans l'adapter à son propre rythme."],
+    checklist: ["Énergie cartographiée", "Tâches alignées sur l'énergie", "Marges prévues", "Première révision mensuelle faite"],
+    isPremium: true,
+  },
 
-  // --- Développement ---
+  // --- Développement (2 gratuites, 2 premium) ---
   {
     id: "m-structurer-projet-web",
     slug: "structurer-un-projet-web-de-zero",
@@ -224,6 +418,25 @@ export const missions: Mission[] = [
     tips: ["Une V1 trop ambitieuse ne sort jamais — coupez large dans le périmètre."],
     commonMistakes: ["Choisir une stack complexe pour un projet simple."],
     checklist: ["Périmètre V1 défini", "Stack choisie", "Tâches découpées"],
+    isPremium: false,
+  },
+  {
+    id: "m-bases-git",
+    slug: "comprendre-les-bases-de-git-et-github",
+    title: "Comprendre les bases de Git et GitHub",
+    description: "Les commandes essentielles pour versionner son code sans perdre son travail.",
+    categorySlug: "developpement",
+    level: "DEBUTANT",
+    estimatedMinutes: 60,
+    recommendedTools: ["tool-github-copilot"],
+    steps: [
+      { id: "s1", title: "Comprendre le principe", content: "Saisir la différence entre modifier un fichier en local et l'enregistrer dans l'historique (commit)." },
+      { id: "s2", title: "Pratiquer le cycle de base", content: "S'entraîner sur `git add`, `git commit`, `git push` avec un petit projet test." },
+      { id: "s3", title: "Connecter à GitHub", content: "Créer un repo GitHub et y pousser son premier projet." },
+    ],
+    tips: ["Committez souvent, avec des messages courts qui décrivent ce qui a changé."],
+    commonMistakes: ["Faire un seul gros commit à la fin plutôt que plusieurs petits en cours de route."],
+    checklist: ["Principe compris", "Cycle add/commit/push pratiqué", "Premier repo GitHub créé"],
     isPremium: false,
   },
   {
@@ -246,8 +459,28 @@ export const missions: Mission[] = [
     checklist: ["Code testé en local", "Hébergeur configuré", "Variables d'environnement reportées", "Fonctionnalités vérifiées en ligne"],
     isPremium: true,
   },
+  {
+    id: "m-base-code-pro",
+    slug: "structurer-une-base-de-code-professionnelle",
+    title: "Structurer une base de code professionnelle",
+    description: "Organisez un projet pour qu'il reste maintenable même en grandissant, avec de bonnes pratiques d'équipe.",
+    categorySlug: "developpement",
+    level: "AVANCE",
+    estimatedMinutes: 150,
+    recommendedTools: ["tool-github-copilot", "tool-claude"],
+    steps: [
+      { id: "s1", title: "Organiser les dossiers", content: "Séparer clairement composants, logique métier, types et utilitaires." },
+      { id: "s2", title: "Mettre en place des conventions", content: "Définir des règles de nommage et de style partagées par toute l'équipe." },
+      { id: "s3", title: "Documenter les décisions", content: "Écrire un court README expliquant les choix d'architecture pour les futurs contributeurs." },
+      { id: "s4", title: "Automatiser les vérifications", content: "Mettre en place des vérifications automatiques (lint, tests) avant chaque envoi de code." },
+    ],
+    tips: ["Une bonne architecture se voit à la vitesse à laquelle un nouveau développeur devient autonome."],
+    commonMistakes: ["Sur-architecturer un petit projet qui n'en a pas besoin."],
+    checklist: ["Dossiers organisés", "Conventions définies", "Décisions documentées", "Vérifications automatisées en place"],
+    isPremium: true,
+  },
 
-  // --- IA ---
+  // --- IA (2 gratuites, 2 premium) ---
   {
     id: "m-bases-prompt-engineering",
     slug: "apprendre-les-bases-du-prompt-engineering",
@@ -265,6 +498,25 @@ export const missions: Mission[] = [
     tips: ["Un bon prompt répond à 3 questions : qui, pour qui, dans quel but."],
     commonMistakes: ["Attendre une réponse parfaite du premier coup sans itérer."],
     checklist: ["Contexte donné", "Instruction précise formulée", "Prompt affiné après un premier essai"],
+    isPremium: false,
+  },
+  {
+    id: "m-choisir-outil-ia",
+    slug: "choisir-le-bon-outil-ia-pour-une-tache",
+    title: "Choisir le bon outil IA pour une tâche",
+    description: "Apprenez à reconnaître quel type d'outil IA convient à chaque besoin, plutôt que d'utiliser toujours le même.",
+    categorySlug: "ia",
+    level: "DEBUTANT",
+    estimatedMinutes: 35,
+    recommendedTools: ["tool-chatgpt", "tool-claude"],
+    steps: [
+      { id: "s1", title: "Identifier le type de tâche", content: "Distinguer rédaction, code, image, vidéo, voix ou recherche d'information récente." },
+      { id: "s2", title: "Associer l'outil adapté", content: "Choisir un outil spécialisé plutôt qu'un outil généraliste quand la tâche l'exige." },
+      { id: "s3", title: "Tester avant d'adopter", content: "Essayer l'outil sur un petit cas avant de l'intégrer à son usage régulier." },
+    ],
+    tips: ["Aucun outil IA n'est le meilleur partout — la Toolbox du site vous aide à choisir selon la tâche."],
+    commonMistakes: ["Utiliser un seul outil pour tout, même quand un autre serait plus adapté."],
+    checklist: ["Type de tâche identifié", "Outil adapté choisi", "Outil testé sur un cas concret"],
     isPremium: false,
   },
   {
@@ -286,8 +538,28 @@ export const missions: Mission[] = [
     checklist: ["Rôle défini", "Contexte récurrent fourni", "Assistant testé sur des cas réels"],
     isPremium: true,
   },
+  {
+    id: "m-agent-autonome",
+    slug: "construire-un-agent-ia-autonome",
+    title: "Construire un agent IA autonome",
+    description: "Allez au-delà du prompt simple : configurez un agent capable d'exécuter des tâches complexes en plusieurs étapes.",
+    categorySlug: "ia",
+    level: "AVANCE",
+    estimatedMinutes: 120,
+    recommendedTools: ["tool-manus", "tool-claude"],
+    steps: [
+      { id: "s1", title: "Définir un objectif clair", content: "Décrire précisément le livrable attendu, pas seulement la tâche générale." },
+      { id: "s2", title: "Découper en sous-tâches", content: "Identifier les étapes intermédiaires que l'agent devra enchaîner." },
+      { id: "s3", title: "Superviser l'exécution", content: "Vérifier chaque étape produite avant de laisser l'agent continuer." },
+      { id: "s4", title: "Valider le résultat final", content: "Relire et corriger le livrable final avant toute utilisation réelle." },
+    ],
+    tips: ["Un agent autonome reste plus fiable sur des tâches bien définies que sur des objectifs vagues."],
+    commonMistakes: ["Laisser l'agent travailler sans aucune supervision intermédiaire."],
+    checklist: ["Objectif précis défini", "Sous-tâches identifiées", "Exécution supervisée", "Résultat final validé"],
+    isPremium: true,
+  },
 
-  // --- Automatisation ---
+  // --- Automatisation (2 gratuites, 2 premium) ---
   {
     id: "m-automatiser-taches",
     slug: "automatiser-ses-taches-repetitives-avec-lia",
@@ -305,6 +577,25 @@ export const missions: Mission[] = [
     tips: ["Commencez toujours par la tâche la plus simple à automatiser, pas la plus impressionnante."],
     commonMistakes: ["Vouloir tout automatiser d'un coup avant d'avoir validé une première automatisation."],
     checklist: ["Tâches répétitives listées", "Priorités définies", "Première automatisation en place"],
+    isPremium: false,
+  },
+  {
+    id: "m-modele-email",
+    slug: "creer-un-modele-demail-automatique",
+    title: "Créer un modèle d'e-mail automatique",
+    description: "Gagnez du temps sur les réponses répétitives grâce à des modèles réutilisables et personnalisables.",
+    categorySlug: "automatisation",
+    level: "DEBUTANT",
+    estimatedMinutes: 40,
+    recommendedTools: ["tool-chatgpt"],
+    steps: [
+      { id: "s1", title: "Identifier les e-mails récurrents", content: "Repérer les types de réponses envoyées régulièrement, presque à l'identique." },
+      { id: "s2", title: "Créer un modèle avec variables", content: "Rédiger un modèle avec des espaces clairs à personnaliser à chaque envoi." },
+      { id: "s3", title: "Tester sur un cas réel", content: "Utiliser le modèle sur le prochain e-mail concerné et l'ajuster si besoin." },
+    ],
+    tips: ["Un bon modèle fait gagner du temps sans jamais paraître impersonnel."],
+    commonMistakes: ["Envoyer un modèle sans l'adapter du tout au destinataire."],
+    checklist: ["E-mails récurrents identifiés", "Modèle créé", "Modèle testé sur un cas réel"],
     isPremium: false,
   },
   {
@@ -327,8 +618,27 @@ export const missions: Mission[] = [
     checklist: ["Processus cartographié", "Outils choisis", "Chaque étape testée", "Workflow validé sur plusieurs cycles"],
     isPremium: true,
   },
+  {
+    id: "m-veille-reporting",
+    slug: "automatiser-sa-veille-et-son-reporting",
+    title: "Automatiser sa veille et son reporting",
+    description: "Mettez en place un système qui collecte et résume l'information à votre place, régulièrement.",
+    categorySlug: "automatisation",
+    level: "AVANCE",
+    estimatedMinutes: 110,
+    recommendedTools: ["tool-manus", "tool-zapier"],
+    steps: [
+      { id: "s1", title: "Définir les sources à suivre", content: "Lister précisément les sources d'information pertinentes pour votre veille." },
+      { id: "s2", title: "Automatiser la collecte", content: "Mettre en place un système qui rassemble automatiquement les nouvelles informations." },
+      { id: "s3", title: "Générer un résumé périodique", content: "Configurer un résumé automatique envoyé à fréquence régulière." },
+    ],
+    tips: ["Une veille utile tient sur une page — résistez à la tentation d'en faire trop."],
+    commonMistakes: ["Suivre trop de sources, ce qui noie l'information vraiment utile."],
+    checklist: ["Sources définies", "Collecte automatisée", "Résumé périodique configuré"],
+    isPremium: true,
+  },
 
-  // --- Gestion de projet ---
+  // --- Gestion de projet (2 gratuites, 2 premium) ---
   {
     id: "m-planifier-projet",
     slug: "planifier-un-projet-avec-lia",
@@ -349,6 +659,25 @@ export const missions: Mission[] = [
     isPremium: false,
   },
   {
+    id: "m-compte-rendu",
+    slug: "rediger-un-compte-rendu-de-reunion-efficace",
+    title: "Rédiger un compte-rendu de réunion efficace",
+    description: "Un format court qui capture les décisions et les actions, sans retranscrire toute la discussion.",
+    categorySlug: "gestion-de-projet",
+    level: "DEBUTANT",
+    estimatedMinutes: 30,
+    recommendedTools: ["tool-chatgpt", "tool-notion-ai"],
+    steps: [
+      { id: "s1", title: "Noter décisions et actions", content: "Se concentrer uniquement sur ce qui a été décidé et qui doit faire quoi." },
+      { id: "s2", title: "Assigner un responsable", content: "Associer chaque action à une seule personne clairement identifiée." },
+      { id: "s3", title: "Envoyer dans les 24h", content: "Partager le compte-rendu rapidement, pendant que la réunion est encore fraîche." },
+    ],
+    tips: ["Un bon compte-rendu tient sur une demi-page — décisions et actions, rien de plus."],
+    commonMistakes: ["Retranscrire toute la discussion au lieu de n'en garder que l'essentiel."],
+    checklist: ["Décisions notées", "Actions assignées", "Compte-rendu envoyé sous 24h"],
+    isPremium: false,
+  },
+  {
     id: "m-piloter-equipe",
     slug: "piloter-une-equipe-projet",
     title: "Piloter une équipe projet",
@@ -365,6 +694,26 @@ export const missions: Mission[] = [
     tips: ["Un point de suivi efficace dure 15 minutes, pas une heure."],
     commonMistakes: ["Laisser un blocage remonter seulement à la réunion suivante."],
     checklist: ["Rythme de suivi défini", "Responsabilités assignées", "Canal de signalement des blocages en place"],
+    isPremium: true,
+  },
+  {
+    id: "m-projet-agile",
+    slug: "gerer-un-projet-avec-methode-agile",
+    title: "Gérer un projet avec méthode agile",
+    description: "Adoptez un fonctionnement en cycles courts qui livre de la valeur régulièrement plutôt qu'en une fois à la fin.",
+    categorySlug: "gestion-de-projet",
+    level: "AVANCE",
+    estimatedMinutes: 130,
+    recommendedTools: ["tool-clickup", "tool-claude"],
+    steps: [
+      { id: "s1", title: "Définir des cycles courts", content: "Découper le projet en cycles de 1 à 2 semaines avec un objectif clair chacun." },
+      { id: "s2", title: "Prioriser à chaque cycle", content: "Choisir ce qui apporte le plus de valeur pour le cycle en cours, pas tout à la fois." },
+      { id: "s3", title: "Faire un bilan à chaque fin de cycle", content: "Évaluer ce qui a fonctionné et ajuster le cycle suivant en conséquence." },
+      { id: "s4", title: "Livrer quelque chose d'utilisable à chaque cycle", content: "S'assurer que chaque cycle produit un résultat concret, même partiel." },
+    ],
+    tips: ["Un cycle réussi livre moins de choses, mais des choses vraiment terminées."],
+    commonMistakes: ["Vouloir tout planifier en détail dès le premier cycle."],
+    checklist: ["Cycles définis", "Priorités fixées par cycle", "Premier bilan de cycle fait", "Résultat concret livré"],
     isPremium: true,
   },
 ];

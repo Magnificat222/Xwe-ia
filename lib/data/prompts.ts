@@ -9,6 +9,7 @@ export const prompts: Prompt[] = [
     categorySlug: "business",
     tags: ["business plan", "étude de marché"],
     isPremium: false,
+    recommendedToolIds: ["tool-perplexity", "tool-chatgpt"],
   },
   {
     id: "pr-modele-economique",
@@ -18,6 +19,7 @@ export const prompts: Prompt[] = [
     categorySlug: "business",
     tags: ["business plan", "modèle économique"],
     isPremium: true,
+    recommendedToolIds: ["tool-claude", "tool-chatgpt"],
   },
   {
     id: "pr-personal-branding",
@@ -27,6 +29,7 @@ export const prompts: Prompt[] = [
     categorySlug: "marketing",
     tags: ["réseaux sociaux", "contenu"],
     isPremium: false,
+    recommendedToolIds: ["tool-chatgpt", "tool-gemini"],
   },
   {
     id: "pr-campagne-message",
@@ -36,6 +39,7 @@ export const prompts: Prompt[] = [
     categorySlug: "marketing",
     tags: ["campagne", "réseaux sociaux"],
     isPremium: true,
+    recommendedToolIds: ["tool-chatgpt", "tool-invideo", "tool-canva"],
   },
   {
     id: "pr-soutenance",
@@ -45,6 +49,7 @@ export const prompts: Prompt[] = [
     categorySlug: "etudes",
     tags: ["soutenance", "mémoire"],
     isPremium: true,
+    recommendedToolIds: ["tool-claude", "tool-chatgpt"],
   },
   {
     id: "pr-plan-revision",
@@ -54,6 +59,7 @@ export const prompts: Prompt[] = [
     categorySlug: "etudes",
     tags: ["révisions", "examen"],
     isPremium: false,
+    recommendedToolIds: ["tool-chatgpt", "tool-gemini"],
   },
   {
     id: "pr-identite-visuelle",
@@ -63,6 +69,7 @@ export const prompts: Prompt[] = [
     categorySlug: "creation",
     tags: ["identité visuelle", "branding"],
     isPremium: false,
+    recommendedToolIds: ["tool-canva", "tool-chatgpt"],
   },
   {
     id: "pr-script-video",
@@ -72,6 +79,7 @@ export const prompts: Prompt[] = [
     categorySlug: "creation",
     tags: ["vidéo", "script"],
     isPremium: true,
+    recommendedToolIds: ["tool-chatgpt", "tool-heygen", "tool-invideo", "tool-elevenlabs"],
   },
   {
     id: "pr-priorisation-semaine",
@@ -81,6 +89,7 @@ export const prompts: Prompt[] = [
     categorySlug: "productivite",
     tags: ["organisation", "priorités"],
     isPremium: false,
+    recommendedToolIds: ["tool-notion-ai", "tool-chatgpt"],
   },
   {
     id: "pr-systeme-notes",
@@ -90,6 +99,7 @@ export const prompts: Prompt[] = [
     categorySlug: "productivite",
     tags: ["notes", "organisation"],
     isPremium: true,
+    recommendedToolIds: ["tool-notion-ai", "tool-claude"],
   },
   {
     id: "pr-architecture-projet",
@@ -99,6 +109,7 @@ export const prompts: Prompt[] = [
     categorySlug: "developpement",
     tags: ["architecture", "web"],
     isPremium: false,
+    recommendedToolIds: ["tool-claude", "tool-deepseek"],
   },
   {
     id: "pr-debug-erreur",
@@ -108,6 +119,7 @@ export const prompts: Prompt[] = [
     categorySlug: "developpement",
     tags: ["debug", "code"],
     isPremium: true,
+    recommendedToolIds: ["tool-github-copilot", "tool-deepseek", "tool-claude"],
   },
   {
     id: "pr-bases-prompt",
@@ -117,6 +129,7 @@ export const prompts: Prompt[] = [
     categorySlug: "ia",
     tags: ["prompt engineering", "bases"],
     isPremium: false,
+    recommendedToolIds: ["tool-chatgpt", "tool-claude", "tool-gemini"],
   },
   {
     id: "pr-assistant-personnalise",
@@ -126,6 +139,7 @@ export const prompts: Prompt[] = [
     categorySlug: "ia",
     tags: ["assistant personnalisé", "instructions"],
     isPremium: true,
+    recommendedToolIds: ["tool-claude", "tool-chatgpt"],
   },
   {
     id: "pr-reperer-automatisation",
@@ -135,6 +149,7 @@ export const prompts: Prompt[] = [
     categorySlug: "automatisation",
     tags: ["automatisation", "productivité"],
     isPremium: false,
+    recommendedToolIds: ["tool-chatgpt", "tool-zapier"],
   },
   {
     id: "pr-workflow-schema",
@@ -144,6 +159,7 @@ export const prompts: Prompt[] = [
     categorySlug: "automatisation",
     tags: ["workflow", "process"],
     isPremium: true,
+    recommendedToolIds: ["tool-manus", "tool-zapier", "tool-claude"],
   },
   {
     id: "pr-jalons-projet",
@@ -153,6 +169,7 @@ export const prompts: Prompt[] = [
     categorySlug: "gestion-de-projet",
     tags: ["planification", "jalons"],
     isPremium: false,
+    recommendedToolIds: ["tool-clickup", "tool-chatgpt"],
   },
   {
     id: "pr-gestion-blocages",
@@ -162,5 +179,6 @@ export const prompts: Prompt[] = [
     categorySlug: "gestion-de-projet",
     tags: ["risques", "pilotage"],
     isPremium: true,
+    recommendedToolIds: ["tool-claude", "tool-clickup"],
   },
 ];

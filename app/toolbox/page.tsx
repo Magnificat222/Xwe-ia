@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, ListChecks } from "lucide-react";
 
 export default async function ToolboxPage() {
   const tools = await prisma.tool.findMany({ orderBy: { name: "asc" } });
@@ -32,6 +32,23 @@ export default async function ToolboxPage() {
                 <Badge key={useCase}>{useCase}</Badge>
               ))}
             </div>
+
+            {tool.howToUse.length > 0 && (
+              <div className="mt-4 rounded-lg bg-noir p-3">
+                <p className="mb-2 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-or">
+                  <ListChecks size={13} /> Comment l'utiliser
+                </p>
+                <ol className="space-y-1.5">
+                  {tool.howToUse.map((step, i) => (
+                    <li key={i} className="flex gap-2 text-xs text-ivoire-dim">
+                      <span className="text-or">{i + 1}.</span>
+                      {step}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
+
             <a
               href={tool.url}
               target="_blank"

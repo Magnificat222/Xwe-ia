@@ -22,9 +22,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MABIDOUZ AI Hub — L'IA au service de vos objectifs",
+  title: "Xwé IA — L'IA au service de vos objectifs",
   description:
-    "MABIDOUZ AI Hub transforme vos objectifs en missions guidées : business plan, lancement d'entreprise, soutenance, personal branding et plus, avec l'IA comme copilote.",
+    "Xwé IA transforme vos objectifs en missions guidées : business plan, lancement d'entreprise, soutenance, personal branding et plus, avec l'IA comme copilote.",
 };
 
 export default function RootLayout({

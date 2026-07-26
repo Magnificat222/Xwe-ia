@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 // Lightweight route guard. Swap the cookie check below for `auth()` from
 // lib/auth.ts once next-auth's edge-compatible session read is wired in.
-const PROTECTED_PREFIXES = ["/dashboard", "/profile", "/admin", "/favoris"];
+const PROTECTED_PREFIXES = ["/dashboard", "/profile", "/admin", "/favoris", "/support"];
 
 export function middleware(request: NextRequest) {
   const isProtected = PROTECTED_PREFIXES.some((prefix) =>
@@ -26,5 +26,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/profile/:path*", "/admin/:path*", "/favoris/:path*"],
+  matcher: ["/dashboard/:path*", "/profile/:path*", "/admin/:path*", "/favoris/:path*", "/support/:path*"],
 };

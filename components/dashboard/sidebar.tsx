@@ -7,6 +7,7 @@ import {
   Wrench,
   Star,
   User,
+  MessageCircleHeart,
 } from "lucide-react";
 
 const links = [
@@ -16,6 +17,7 @@ const links = [
   { href: "/prompts", label: "Prompts", icon: Library },
   { href: "/toolbox", label: "Outils IA", icon: Wrench },
   { href: "/favoris", label: "Favoris", icon: Star },
+  { href: "/support", label: "Support Premium", icon: MessageCircleHeart },
   { href: "/profile", label: "Profil", icon: User },
 ];
 

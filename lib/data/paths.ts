@@ -61,8 +61,8 @@ export const learningPaths: LearningPath[] = [
     id: "p-developpeur",
     slug: "developper-un-projet-professionnel",
     title: "Développer un projet professionnel",
-    description: "De l'architecture d'un projet web jusqu'à sa mise en ligne.",
-    missionIds: ["m-structurer-projet-web", "m-deployer-app"],
-    isPremium: false,
+    description: "De l'architecture d'un projet web jusqu'à une base de code prête pour une équipe.",
+    missionIds: ["m-structurer-projet-web", "m-bases-git", "m-deployer-app", "m-base-code-pro"],
+    isPremium: true,
   },
 ];

@@ -92,6 +92,7 @@ async function main() {
         pricing: tool.pricing,
         features: tool.features,
         url: tool.url,
+        howToUse: tool.howToUse,
       },
     });
   }
@@ -107,6 +108,7 @@ async function main() {
         content: prompt.content,
         tags: prompt.tags,
         isPremium: prompt.isPremium,
+        recommendedTools: prompt.recommendedToolIds,
         categoryId: categoryMap.get(prompt.categorySlug)!,
       },
     });

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, Sparkles } from "lucide-react";
 
 interface PromptItem {
   id: string;
@@ -12,6 +12,7 @@ interface PromptItem {
   content: string;
   tags: string[];
   isPremium: boolean;
+  recommendedToolNames: string[];
 }
 
 export default function PromptsPage() {
@@ -57,6 +58,15 @@ export default function PromptsPage() {
             <p className="mb-3 rounded-lg bg-noir p-3 font-mono text-xs leading-relaxed text-ivoire-dim">
               {prompt.content}
             </p>
+            {prompt.recommendedToolNames.length > 0 && (
+              <div className="mb-3 flex flex-wrap items-center gap-1.5 text-xs text-ivoire-dim">
+                <Sparkles size={13} className="text-or" />
+                <span>Plus efficace avec :</span>
+                {prompt.recommendedToolNames.map((name) => (
+                  <Badge key={name} tone="violet">{name}</Badge>
+                ))}
+              </div>
+            )}
             <div className="flex items-center justify-between">
               <div className="flex flex-wrap gap-1.5">
                 {prompt.tags.map((tag) => (

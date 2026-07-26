@@ -62,6 +62,7 @@ export interface Prompt {
   categorySlug: MissionCategorySlug;
   tags: string[];
   isPremium: boolean;
+  recommendedToolIds: string[]; // Tool ids most effective for this prompt
 }
 
 export interface Tool {
@@ -72,6 +73,7 @@ export interface Tool {
   pricing: string;
   features: string[];
   url: string;
+  howToUse: string[]; // short step-by-step usage guide
 }
 
 export type SubscriptionPlan = "FREE" | "PREMIUM";
