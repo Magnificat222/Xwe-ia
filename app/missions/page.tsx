@@ -31,7 +31,7 @@ export default async function MissionsPage({
     level: m.level,
     estimatedMinutes: m.estimatedMinutes,
     recommendedTools: m.recommendedTools,
-    steps: m.steps as Mission["steps"],
+    steps: m.steps as unknown as Mission["steps"],
     tips: m.tips,
     commonMistakes: m.commonMistakes,
     checklist: m.checklist,
