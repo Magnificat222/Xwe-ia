@@ -37,7 +37,7 @@ async function main() {
         level: mission.level,
         estimatedMinutes: mission.estimatedMinutes,
         recommendedTools: mission.recommendedTools,
-        steps: mission.steps,
+        steps: mission.steps as any,
         tips: mission.tips,
         commonMistakes: mission.commonMistakes,
         checklist: mission.checklist,
