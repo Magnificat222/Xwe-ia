@@ -11,18 +11,19 @@ export async function GET() {
   // Group by user, keep the most recent message per thread.
   const messages = await prisma.supportMessage.findMany({
     orderBy: { createdAt: "desc" },
-    include: { user: { select: { id: true, name: true, email: true } } },
+    include: { author: { select: { id: true, name: true, email: true } } },
   });
 
-  const threadsByUser = new Map<
+  const threadsByUser = new Map
     string,
     { user: { id: string; name: string | null; email: string }; lastMessage: string; lastAt: Date }
   >();
 
   for (const m of messages) {
-    if (!threadsByUser.has(m.userId)) {
-      threadsByUser.set(m.userId, {
-        user: m.user,
+    if (!m.authorId || !m.author) continue;
+    if (!threadsByUser.has(m.authorId)) {
+      threadsByUser.set(m.authorId, {
+        user: m.author,
         lastMessage: m.content,
         lastAt: m.createdAt,
       });
