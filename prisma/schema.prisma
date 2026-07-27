@@ -232,16 +232,24 @@ model Subscription {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-// Simple 1:1 support thread between a Premium user and the admin.
-// senderRole reuses the Role enum to indicate who wrote the message.
+// Shared group chat for all Premium members ("Salon Premium"). Every
+// Premium user and the admin post into the same feed; Gemini also auto-
+// replies as a first responder (see lib/gemini.ts).
 model SupportMessage {
-  id        String   @id @default(cuid())
-  userId    String // the Premium user this thread belongs to
-  senderRole Role
-  content   String   @db.Text
-  createdAt DateTime @default(now())
+  id         String         @id @default(cuid())
+  authorId   String?
+  authorName String
+  senderRole ChatSenderRole
+  content    String         @db.Text
+  createdAt  DateTime       @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
-  @@index([userId])
+  @@index([createdAt])
+}
+
+enum ChatSenderRole {
+  USER
+  ADMIN
+  AI
 }

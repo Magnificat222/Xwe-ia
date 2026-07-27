@@ -2,7 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  eslint: { ignoreDuringBuilds: true },
+  eslint: {
+    // Lint errors (like unescaped apostrophes) shouldn't block production
+    // builds — run `npm run lint` locally if you want to see/fix them.
+    ignoreDuringBuilds: true,
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**" },

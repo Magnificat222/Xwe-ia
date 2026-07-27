@@ -1,25 +1,28 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { generateAIReply } from "@/lib/gemini";
 
-export async function GET(request: Request) {
+async function isAllowed(userId: string, role: string) {
+  if (role === "ADMIN") return true;
+  const subscription = await prisma.subscription.findUnique({ where: { userId } });
+  return subscription?.plan === "PREMIUM";
+}
+
+export async function GET() {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
   }
 
-  const { searchParams } = new URL(request.url);
-  const requestedUserId = searchParams.get("userId");
-
-  let targetUserId = session.user.id;
-
-  if (session.user.role === "ADMIN" && requestedUserId) {
-    targetUserId = requestedUserId;
+  const allowed = await isAllowed(session.user.id, session.user.role);
+  if (!allowed) {
+    return NextResponse.json({ error: "Réservé aux membres Premium." }, { status: 403 });
   }
 
   const messages = await prisma.supportMessage.findMany({
-    where: { userId: targetUserId },
     orderBy: { createdAt: "asc" },
+    take: 200,
   });
 
   return NextResponse.json({ messages });
@@ -31,34 +34,38 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
   }
 
-  const { content, userId } = await request.json();
+  const allowed = await isAllowed(session.user.id, session.user.role);
+  if (!allowed) {
+    return NextResponse.json({ error: "Réservé aux membres Premium." }, { status: 403 });
+  }
+
+  const { content } = await request.json();
   if (!content?.trim()) {
     return NextResponse.json({ error: "Message vide." }, { status: 400 });
   }
 
-  // Admin replying into someone else's thread
-  if (session.user.role === "ADMIN" && userId) {
-    const message = await prisma.supportMessage.create({
-      data: { userId, senderRole: "ADMIN", content },
-    });
-    return NextResponse.json({ message });
-  }
-
-  // Regular user writing in their own thread — must be Premium.
-  const subscription = await prisma.subscription.findUnique({
-    where: { userId: session.user.id },
-  });
-
-  if (subscription?.plan !== "PREMIUM") {
-    return NextResponse.json(
-      { error: "Le chat support est réservé aux membres Premium." },
-      { status: 403 }
-    );
-  }
+  const senderRole = session.user.role === "ADMIN" ? "ADMIN" : "USER";
+  const authorName = session.user.name ?? session.user.email ?? "Membre Xwé IA";
 
   const message = await prisma.supportMessage.create({
-    data: { userId: session.user.id, senderRole: "USER", content },
+    data: { authorId: session.user.id, authorName, senderRole, content },
   });
+
+  // Only auto-reply to regular members, not to the admin's own messages,
+  // so Gemini doesn't talk over her when she's actively answering.
+  if (senderRole === "USER") {
+    const aiText = await generateAIReply(content);
+    if (aiText) {
+      await prisma.supportMessage.create({
+        data: {
+          authorId: null,
+          authorName: "Assistant IA",
+          senderRole: "AI",
+          content: aiText,
+        },
+      });
+    }
+  }
 
   return NextResponse.json({ message });
 }
