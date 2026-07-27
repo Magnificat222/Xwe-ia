@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+type ThreadUser = { id: string; name: string | null; email: string };
+type Thread = { user: ThreadUser; lastMessage: string; lastAt: Date };
+
 export async function GET() {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") {
@@ -14,10 +17,7 @@ export async function GET() {
     include: { author: { select: { id: true, name: true, email: true } } },
   });
 
-  const threadsByUser = new Map
-    string,
-    { user: { id: string; name: string | null; email: string }; lastMessage: string; lastAt: Date }
-  >();
+  const threadsByUser = new Map<string, Thread>();
 
   for (const m of messages) {
     if (!m.authorId || !m.author) continue;
