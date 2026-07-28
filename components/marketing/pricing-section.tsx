@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { KkiapayCheckoutButton } from "@/components/marketing/kkiapay-checkout-button";
+import { PREMIUM_AMOUNT_XOF } from "@/lib/constants";
 
 const plans = [
   {
@@ -22,7 +23,7 @@ const plans = [
   },
   {
     name: "Premium",
-    price: "05",
+    price: PREMIUM_AMOUNT_XOF.toString(),
     description: "Pour aller jusqu'au résultat, sur tous vos objectifs.",
     features: [
       "Toutes les missions et parcours",
@@ -53,7 +54,7 @@ export function PricingSection() {
             <div className="flex items-baseline justify-between">
               <h3 className="font-display text-xl text-ivoire">{plan.name}</h3>
               <p className="font-display text-2xl text-or">
-                {plan.price}€<span className="text-sm text-ivoire-dim"> /mois</span>
+                {plan.price} FCFA<span className="text-sm text-ivoire-dim"> /mois</span>
               </p>
             </div>
             <p className="mt-2 text-sm text-ivoire-dim">{plan.description}</p>

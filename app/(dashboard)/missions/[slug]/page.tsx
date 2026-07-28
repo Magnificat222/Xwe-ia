@@ -8,6 +8,7 @@ import { formatMinutes } from "@/lib/utils";
 import { CheckCircle2, Lightbulb, AlertTriangle, Clock, Lock } from "lucide-react";
 import type { MissionStep } from "@/types";
 import { FavoriteMissionButton } from "@/components/missions/favorite-mission-button";
+import { CompleteMissionButton } from "@/components/missions/complete-mission-button";
 
 export default async function MissionDetailPage({
   params,
@@ -125,7 +126,7 @@ export default async function MissionDetailPage({
       </section>
 
       <div className="flex flex-wrap gap-3">
-        <Button size="lg">Marquer comme terminée</Button>
+        <CompleteMissionButton missionId={mission.id} />
         <FavoriteMissionButton missionId={mission.id} />
       </div>
     </main>

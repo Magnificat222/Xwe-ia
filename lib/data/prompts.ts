@@ -181,4 +181,96 @@ export const prompts: Prompt[] = [
     isPremium: true,
     recommendedToolIds: ["tool-claude", "tool-clickup"],
   },
+
+  // --- Prompts Premium ajoutés ---
+  {
+    id: "pr-pitch-investisseur-30s",
+    title: "Pitch investisseur en 30 secondes",
+    content:
+      "Tu es coach en pitch pour investisseurs. À partir de [description du projet], [marché visé] et [traction actuelle], rédige un pitch oral de 30 secondes qui capte l'attention dès la première phrase et se termine par une demande claire.",
+    categorySlug: "business",
+    tags: ["pitch", "investisseurs"],
+    isPremium: true,
+    recommendedToolIds: ["tool-claude", "tool-chatgpt"],
+  },
+  {
+    id: "pr-objections-negociation",
+    title: "Anticiper les objections d'un client",
+    content:
+      "Tu es négociateur commercial expérimenté. Pour cette offre [description de l'offre] proposée à [type de client], liste les 5 objections les plus probables et une réponse convaincante et honnête pour chacune.",
+    categorySlug: "business",
+    tags: ["négociation", "objections"],
+    isPremium: true,
+    recommendedToolIds: ["tool-chatgpt", "tool-claude"],
+  },
+  {
+    id: "pr-calendrier-editorial-90j",
+    title: "Calendrier éditorial sur 90 jours",
+    content:
+      "Tu es stratège de contenu. À partir de ces 3 piliers de contenu [pilier 1, pilier 2, pilier 3] et de cette audience [description de l'audience], génère un calendrier de 12 semaines avec un sujet par semaine et le format recommandé.",
+    categorySlug: "marketing",
+    tags: ["calendrier éditorial", "stratégie"],
+    isPremium: true,
+    recommendedToolIds: ["tool-chatgpt", "tool-notion-ai"],
+  },
+  {
+    id: "pr-sequence-relance-email",
+    title: "Séquence de relance e-mail après abandon",
+    content:
+      "Tu es spécialiste en marketing automation. Pour un visiteur ayant consulté [offre] sans acheter, rédige une séquence de 3 e-mails de relance espacés dans le temps, chacun avec un angle différent et un objet accrocheur.",
+    categorySlug: "marketing",
+    tags: ["email marketing", "conversion"],
+    isPremium: true,
+    recommendedToolIds: ["tool-chatgpt", "tool-zapier"],
+  },
+  {
+    id: "pr-rapporteur-severe-memoire",
+    title: "Rapporteur sévère pour relecture de mémoire",
+    content:
+      "Tu es un rapporteur de jury exigeant et sans complaisance. Lis cette partie de mémoire [texte ou résumé de la partie] et identifie les 5 faiblesses les plus critiques : logique, sourcing, méthodologie ou clarté.",
+    categorySlug: "etudes",
+    tags: ["mémoire", "relecture critique"],
+    isPremium: true,
+    recommendedToolIds: ["tool-claude", "tool-perplexity"],
+  },
+  {
+    id: "pr-territoire-marque",
+    title: "Définir un territoire de marque",
+    content:
+      "Tu es directeur artistique. À partir de ces valeurs [valeurs de la marque] et de cette cible [cible], propose 3 directions de territoire de marque distinctes, chacune avec une palette de couleurs, un ton et une référence visuelle.",
+    categorySlug: "creation",
+    tags: ["identité visuelle", "branding"],
+    isPremium: true,
+    recommendedToolIds: ["tool-canva", "tool-chatgpt"],
+  },
+  {
+    id: "pr-routine-semaine-ideale",
+    title: "Concevoir sa semaine de travail idéale",
+    content:
+      "Tu es coach en productivité. À partir de ces priorités [liste des priorités] et de ces contraintes [contraintes horaires], propose un modèle de semaine type avec des blocs de temps dédiés à chaque priorité.",
+    categorySlug: "productivite",
+    tags: ["routine", "organisation"],
+    isPremium: true,
+    recommendedToolIds: ["tool-notion-ai", "tool-clickup"],
+  },
+  {
+    id: "pr-revue-code-securite",
+    title: "Revue de code orientée sécurité",
+    content:
+      "Tu es expert en sécurité applicative. Analyse ce code [extrait de code] et identifie les failles de sécurité potentielles (injection, données sensibles exposées, validation manquante), classées par gravité.",
+    categorySlug: "developpement",
+    tags: ["sécurité", "revue de code"],
+    isPremium: true,
+    recommendedToolIds: ["tool-claude", "tool-github-copilot"],
+  },
+  {
+    id: "pr-synthese-veille-hebdo",
+    title: "Synthèse de veille hebdomadaire",
+    content:
+      "Tu es analyste de veille. À partir de ces articles et sources de la semaine [liste de titres ou liens], produis une synthèse d'une page classée par thème, avec pour chaque point une phrase d'implication concrète pour mon activité [secteur].",
+    categorySlug: "ia",
+    tags: ["veille", "synthèse"],
+    isPremium: true,
+    recommendedToolIds: ["tool-perplexity", "tool-notion-ai"],
+  },
 ];

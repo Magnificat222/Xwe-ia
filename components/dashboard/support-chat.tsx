@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 interface SupportMessage {
   id: string;
-  senderRole: "USER" | "ADMIN";
+  senderRole: "USER" | "ADMIN" | "AI";
   content: string;
   createdAt: string;
 }

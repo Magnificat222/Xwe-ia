@@ -5,6 +5,7 @@ import Script from "next/script";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
+import { PREMIUM_AMOUNT_XOF } from "@/lib/constants";
 
 declare global {
   interface Window {
@@ -12,8 +13,6 @@ declare global {
     addSuccessListener?: (cb: (response: { transactionId: string }) => void) => void;
   }
 }
-
-const PREMIUM_AMOUNT_XOF = 3200; // ~05€ converti en Francs CFA, ajuste au besoin
 
 export function KkiapayCheckoutButton() {
   const router = useRouter();

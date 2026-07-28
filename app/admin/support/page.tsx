@@ -8,7 +8,7 @@ export default function AdminSupportPage() {
         Tous les membres Premium partagent ce salon. L'assistant IA répond en
         premier ; interviens quand une réponse mérite ta touche personnelle.
       </p>
-      <SupportChat />
+      <SupportChat asAdmin />
     </div>
   );
 }

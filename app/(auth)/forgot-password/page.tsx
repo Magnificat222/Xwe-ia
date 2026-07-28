@@ -15,8 +15,11 @@ export default function ForgotPasswordPage() {
   } = useForm<ForgotPasswordInput>({ resolver: zodResolver(forgotPasswordSchema) });
 
   const onSubmit = async (data: ForgotPasswordInput) => {
-    // TODO: POST to /api/auth/forgot-password (issue reset token, send email)
-    console.log("forgot-password", data);
+    await fetch("/api/auth/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
   };
 
   return (

@@ -17,3 +17,8 @@ export const forgotPasswordSchema = z.object({
   email: z.string().email("Adresse e-mail invalide"),
 });
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z.object({
+  password: z.string().min(8, "8 caractères minimum"),
+});
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
