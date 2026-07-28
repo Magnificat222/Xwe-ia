@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
-import { Clock } from "lucide-react";
+import { Clock, ArrowLeft } from "lucide-react";
 import { formatMinutes } from "@/lib/utils";
 
 export default async function ParcoursDetailPage({
@@ -20,6 +20,12 @@ export default async function ParcoursDetailPage({
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
+      <Link
+        href="/parcours"
+        className="mb-6 inline-flex items-center gap-1.5 text-sm text-ivoire-dim transition-colors hover:text-or"
+      >
+        <ArrowLeft size={15} /> Retour aux parcours
+      </Link>
       <div className="mb-10">
         <div className="mb-3">
           {path.isPremium ? <Badge tone="gold">Premium</Badge> : <Badge>Gratuit</Badge>}

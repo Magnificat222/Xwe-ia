@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { SupportChat } from "@/components/dashboard/support-chat";
-import { Lock } from "lucide-react";
+import { Lock, ArrowLeft } from "lucide-react";
 
 export default async function SupportPage() {
   const session = await auth();
@@ -27,15 +27,21 @@ export default async function SupportPage() {
           réponses instantanées de l'assistant IA, et bénéficier d'un suivi
           personnalisé de l'équipe Xwé IA.
         </p>
-        <Link href="/#tarifs" className="mt-6 inline-block">
+        <a href="/#tarifs" className="mt-6 inline-block">
           <Button size="lg">Voir les offres Premium</Button>
-        </Link>
+        </a>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-2xl">
+      <Link
+        href="/dashboard"
+        className="mb-6 inline-flex items-center gap-1.5 text-sm text-ivoire-dim transition-colors hover:text-or"
+      >
+        <ArrowLeft size={15} /> Retour au tableau de bord
+      </Link>
       <div className="mb-6">
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-or">Salon Premium</p>
         <h1 className="mt-2 font-display text-2xl text-ivoire">

@@ -1,25 +1,5 @@
 import Link from "next/link";
-import {
-  LayoutDashboard,
-  Target,
-  Route,
-  Library,
-  Wrench,
-  Star,
-  User,
-  MessageCircleHeart,
-} from "lucide-react";
-
-const links = [
-  { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
-  { href: "/missions", label: "Missions", icon: Target },
-  { href: "/parcours", label: "Parcours", icon: Route },
-  { href: "/prompts", label: "Prompts", icon: Library },
-  { href: "/toolbox", label: "Outils IA", icon: Wrench },
-  { href: "/favoris", label: "Favoris", icon: Star },
-  { href: "/support", label: "Support Premium", icon: MessageCircleHeart },
-  { href: "/profile", label: "Profil", icon: User },
-];
+import { dashboardNavLinks } from "@/components/dashboard/nav-links";
 
 export function Sidebar() {
   return (
@@ -30,7 +10,7 @@ export function Sidebar() {
         </Link>
       </div>
       <nav className="space-y-1 px-3">
-        {links.map((link) => (
+        {dashboardNavLinks.map((link) => (
           <Link
             key={link.href}
             href={link.href}

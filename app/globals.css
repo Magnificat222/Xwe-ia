@@ -29,10 +29,24 @@ html {
   color-scheme: dark;
 }
 
+.light {
+  --color-noir: #ffffff;
+  --color-noir-soft: #f5f4f1;
+  --color-noir-elevated: #ebe9e4;
+  --color-ivoire: #17161b;
+  --color-ivoire-dim: #57544c;
+  --color-or: #a9803a;
+  --color-or-vif: #8f6a2c;
+  --color-violet: #ece6f5;
+  --color-violet-soft: #ddd0ef;
+  color-scheme: light;
+}
+
 body {
   background-color: var(--color-noir);
   color: var(--color-ivoire);
   font-family: var(--font-body);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 ::selection {

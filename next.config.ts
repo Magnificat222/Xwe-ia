@@ -15,6 +15,13 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
+  // The ebook PDFs live outside /public (so they can't be downloaded without
+  // going through the authenticated API route) and are read dynamically via
+  // fs at runtime — Next can't trace that reference statically, so we must
+  // tell it explicitly to bundle the whole folder into the serverless function.
+  outputFileTracingIncludes: {
+    "/api/ebooks/[slug]/download": ["./content/ebooks/**"],
+  },
 };
 
 export default nextConfig;

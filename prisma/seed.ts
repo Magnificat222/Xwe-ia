@@ -4,6 +4,7 @@ import { missions } from "../lib/data/missions";
 import { tools } from "../lib/data/tools";
 import { prompts } from "../lib/data/prompts";
 import { learningPaths } from "../lib/data/paths";
+import { ebooks } from "../lib/data/ebooks";
 
 const prisma = new PrismaClient();
 
@@ -110,6 +111,23 @@ async function main() {
         isPremium: prompt.isPremium,
         recommendedTools: prompt.recommendedToolIds,
         categoryId: categoryMap.get(prompt.categorySlug)!,
+      },
+    });
+  }
+
+  console.log("Seeding ebooks...");
+  for (const ebook of ebooks) {
+    await prisma.ebook.upsert({
+      where: { slug: ebook.slug },
+      update: {},
+      create: {
+        id: ebook.id,
+        slug: ebook.slug,
+        title: ebook.title,
+        description: ebook.description,
+        fileName: ebook.fileName,
+        pageCount: ebook.pageCount,
+        isPremium: ebook.isPremium,
       },
     });
   }

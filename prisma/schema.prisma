@@ -253,3 +253,17 @@ enum ChatSenderRole {
   ADMIN
   AI
 }
+
+// Downloadable PDF guides, gated to Premium members (+ admin). The actual
+// PDF files live in /content/ebooks (outside /public, so they can't be
+// downloaded directly without going through the authenticated API route).
+model Ebook {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String   @db.Text
+  fileName    String // filename inside /content/ebooks
+  pageCount   Int?
+  isPremium   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}

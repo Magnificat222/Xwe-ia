@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatMinutes } from "@/lib/utils";
-import { CheckCircle2, Lightbulb, AlertTriangle, Clock, Lock } from "lucide-react";
+import { CheckCircle2, Lightbulb, AlertTriangle, Clock, Lock, ArrowLeft } from "lucide-react";
 import type { MissionStep } from "@/types";
 import { FavoriteMissionButton } from "@/components/missions/favorite-mission-button";
 import { CompleteMissionButton } from "@/components/missions/complete-mission-button";
@@ -39,6 +39,12 @@ export default async function MissionDetailPage({
   if (locked) {
     return (
       <main className="mx-auto max-w-2xl px-6 py-16 text-center">
+        <Link
+          href="/missions"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm text-ivoire-dim transition-colors hover:text-or"
+        >
+          <ArrowLeft size={15} /> Retour aux missions
+        </Link>
         <div className="mb-3 flex items-center justify-center gap-2">
           <Badge>{mission.level.toLowerCase()}</Badge>
           <Badge tone="gold">Premium</Badge>
@@ -53,9 +59,9 @@ export default async function MissionDetailPage({
             Passez Premium pour débloquer les étapes détaillées, les conseils
             et la checklist complète de cette mission.
           </p>
-          <Link href="/#tarifs" className="mt-5 inline-block">
+          <a href="/#tarifs" className="mt-5 inline-block">
             <Button size="lg">Voir les offres Premium</Button>
-          </Link>
+          </a>
         </div>
       </main>
     );
@@ -65,6 +71,12 @@ export default async function MissionDetailPage({
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-16">
+      <Link
+        href="/missions"
+        className="mb-6 inline-flex items-center gap-1.5 text-sm text-ivoire-dim transition-colors hover:text-or"
+      >
+        <ArrowLeft size={15} /> Retour aux missions
+      </Link>
       <div className="mb-8">
         <div className="mb-3 flex items-center gap-2">
           <Badge>{mission.level.toLowerCase()}</Badge>
