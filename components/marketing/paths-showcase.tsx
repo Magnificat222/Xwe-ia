@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { learningPaths } from "@/lib/data/paths";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Lock } from "lucide-react";
 
 export function PathsShowcase() {
   return (
@@ -12,29 +13,36 @@ export function PathsShowcase() {
           <h2 className="mt-3 font-display text-3xl text-ivoire">
             Des parcours complets, pas des astuces isolées
           </h2>
+          <p className="mt-3 text-sm text-ivoire-dim">
+            Chaque parcours enchaîne plusieurs missions pour vous amener d'un objectif flou à un résultat concret.
+          </p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
           {learningPaths.map((path) => (
-            <Card key={path.id} className="flex flex-col justify-between">
-              <div>
-                <div className="mb-3 flex items-center justify-between">
-                  {path.isPremium ? (
-                    <Badge tone="gold">Premium</Badge>
-                  ) : (
-                    <Badge>Gratuit</Badge>
-                  )}
-                  <span className="text-xs text-ivoire-dim">
-                    {path.missionIds.length} mission{path.missionIds.length > 1 ? "s" : ""}
-                  </span>
+            <Link key={path.id} href={`/parcours/${path.slug}`}>
+              <Card className="flex h-full flex-col justify-between transition-colors hover:border-or/30">
+                <div>
+                  <div className="mb-3 flex items-center justify-between">
+                    {path.isPremium ? (
+                      <Badge tone="gold" className="gap-1">
+                        <Lock size={11} /> Premium
+                      </Badge>
+                    ) : (
+                      <Badge>Gratuit</Badge>
+                    )}
+                    <span className="text-xs text-ivoire-dim">
+                      {path.missionIds.length} mission{path.missionIds.length > 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  <h3 className="font-display text-lg text-ivoire">{path.title}</h3>
+                  <p className="mt-2 text-sm text-ivoire-dim">{path.description}</p>
                 </div>
-                <h3 className="font-display text-lg text-ivoire">{path.title}</h3>
-                <p className="mt-2 text-sm text-ivoire-dim">{path.description}</p>
-              </div>
-              <div className="mt-6 flex items-center gap-1.5 text-sm text-or">
-                Découvrir le parcours <ArrowUpRight size={14} />
-              </div>
-            </Card>
+                <div className="mt-6 flex items-center gap-1.5 text-sm text-or">
+                  Découvrir le parcours <ArrowUpRight size={14} />
+                </div>
+              </Card>
+            </Link>
           ))}
         </div>
       </div>

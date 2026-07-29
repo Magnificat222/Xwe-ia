@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { dashboardNavLinks } from "@/components/dashboard/nav-links";
+import { SignOutButton } from "@/components/shared/sign-out-button";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -55,6 +56,9 @@ export function MobileNav() {
                   {link.label}
                 </Link>
               ))}
+              <div className="mt-2 border-t border-ivoire/10 pt-2">
+                <SignOutButton />
+              </div>
             </div>
           </nav>
         </div>

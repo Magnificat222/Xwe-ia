@@ -1,6 +1,6 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -26,11 +26,12 @@ const plans = [
     price: PREMIUM_AMOUNT_XOF.toString(),
     description: "Pour aller jusqu'au résultat, sur tous vos objectifs.",
     features: [
-      "Toutes les missions et parcours",
+      "Toutes les missions et parcours débloqués",
       "Bibliothèque de prompts complète",
       "Tous les outils IA recommandés",
+      "Ebooks téléchargeables",
+      "Salon Premium avec l'IA et l'équipe Xwé IA",
       "Badges et statistiques avancées",
-      "Support prioritaire",
     ],
     cta: "Passer Premium",
     highlighted: true,
@@ -52,7 +53,10 @@ export function PricingSection() {
             className={plan.highlighted ? "border-or/50 bg-violet/10" : undefined}
           >
             <div className="flex items-baseline justify-between">
-              <h3 className="font-display text-xl text-ivoire">{plan.name}</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-display text-xl text-ivoire">{plan.name}</h3>
+                {plan.highlighted && <Star size={16} className="fill-or text-or" />}
+              </div>
               <p className="font-display text-2xl text-or">
                 {plan.price} FCFA<span className="text-sm text-ivoire-dim"> /mois</span>
               </p>

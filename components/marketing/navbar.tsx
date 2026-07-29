@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { LayoutDashboard } from "lucide-react";
@@ -38,11 +38,16 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           <ThemeToggle />
           {status === "authenticated" && session?.user ? (
-            <Link href="/dashboard">
-              <Button variant="primary" size="sm">
-                <LayoutDashboard size={15} /> Tableau de bord
+            <>
+              <Link href="/dashboard">
+                <Button variant="secondary" size="sm">
+                  <LayoutDashboard size={15} /> Tableau de bord
+                </Button>
+              </Link>
+              <Button variant="ghost" size="sm" onClick={() => signOut({ callbackUrl: "/" })}>
+                Déconnexion
               </Button>
-            </Link>
+            </>
           ) : (
             <>
               <Link href="/login">
