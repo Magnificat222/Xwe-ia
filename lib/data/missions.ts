@@ -922,25 +922,6 @@ export const missions: Mission[] = [
 
   // --- Gestion de projet (2 gratuites, 4 premium) ---
   {
-    id: "m-planifier-projet",
-    slug: "planifier-un-projet-avec-lia",
-    title: "Planifier un projet avec l'IA",
-    description: "Transformez un objectif flou en plan d'action structuré avec des jalons clairs.",
-    categorySlug: "gestion-de-projet",
-    level: "DEBUTANT",
-    estimatedMinutes: 75,
-    recommendedTools: ["tool-notion-ai"],
-    steps: [
-      { id: "s1", title: "Clarifier l'objectif final", content: "Formuler l'objectif du projet en une phrase mesurable." },
-      { id: "s2", title: "Découper en jalons", content: "Identifier 3-5 grandes étapes qui mènent à l'objectif final." },
-      { id: "s3", title: "Définir un calendrier réaliste", content: "Attribuer une date à chaque jalon, avec une marge pour les imprévus." },
-    ],
-    tips: ["Un jalon doit être vérifiable — soit il est atteint, soit il ne l'est pas."],
-    commonMistakes: ["Définir des jalons flous impossibles à valider clairement."],
-    checklist: ["Objectif clarifié", "Jalons définis", "Calendrier réaliste établi"],
-    isPremium: false,
-  },
-  {
     id: "m-business-model-canvas",
     slug: "remplir-un-business-model-canvas",
     title: "Remplir un Business Model Canvas",
@@ -983,25 +964,6 @@ export const missions: Mission[] = [
 
   // --- Marketing (2 gratuites, 4 premium) ---
   {
-    id: "m-personal-branding",
-    slug: "developper-son-personal-branding",
-    title: "Développer son personal branding",
-    description: "Construisez une présence cohérente sur les réseaux avec un positionnement clair.",
-    categorySlug: "marketing",
-    level: "INTERMEDIAIRE",
-    estimatedMinutes: 100,
-    recommendedTools: ["tool-chatgpt"],
-    steps: [
-      { id: "s1", title: "Positionnement", content: "Clarifier votre expertise et votre audience." },
-      { id: "s2", title: "Ligne éditoriale", content: "Définir 3 formats de contenu récurrents." },
-      { id: "s3", title: "Calendrier", content: "Planifier un mois de publications." },
-    ],
-    tips: ["La régularité compte plus que la perfection de chaque post."],
-    commonMistakes: ["Changer de positionnement toutes les semaines."],
-    checklist: ["Positionnement écrit", "3 formats définis", "Calendrier créé"],
-    isPremium: false,
-  },
-  {
     id: "m-contenu-reseaux-batch",
     slug: "creer-un-batch-de-contenu-pour-reseaux",
     title: "Créer un batch de contenu pour réseaux sociaux",
@@ -1023,25 +985,6 @@ export const missions: Mission[] = [
   },
 
   // --- Productivité (2 gratuites, 3 premium) ---
-  {
-    id: "m-organiser-semaine",
-    slug: "organiser-sa-semaine-avec-lia",
-    title: "Organiser sa semaine avec l'IA",
-    description: "Construisez un système hebdomadaire simple pour prioriser vos tâches sans vous épuiser.",
-    categorySlug: "productivite",
-    level: "DEBUTANT",
-    estimatedMinutes: 45,
-    recommendedTools: ["tool-notion-ai"],
-    steps: [
-      { id: "s1", title: "Lister sans trier", content: "Sortir toutes les tâches de la semaine de votre tête, sans les organiser encore." },
-      { id: "s2", title: "Prioriser avec l'IA", content: "Demander à l'IA de regrouper les tâches par urgence/importance." },
-      { id: "s3", title: "Planifier 3 priorités par jour", content: "Ne garder que 3 tâches clés par jour, le reste devient secondaire." },
-    ],
-    tips: ["3 priorités par jour, pas 10 — le reste attendra."],
-    commonMistakes: ["Planifier une semaine sans laisser de marge pour les imprévus."],
-    checklist: ["Liste complète sortie de la tête", "Tâches priorisées", "3 priorités par jour définies"],
-    isPremium: false,
-  },
   {
     id: "m-evaluer-reponses-ia",
     slug: "evaluer-la-qualite-des-reponses-ia",
@@ -1065,25 +1008,6 @@ export const missions: Mission[] = [
 
   // --- Automatisation (2 gratuites, 4 premium) ---
   {
-    id: "m-automatiser-taches",
-    slug: "automatiser-ses-taches-repetitives-avec-lia",
-    title: "Automatiser ses tâches répétitives avec l'IA",
-    description: "Identifiez les tâches à automatiser en premier et mettez en place vos premiers gains de temps.",
-    categorySlug: "automatisation",
-    level: "DEBUTANT",
-    estimatedMinutes: 70,
-    recommendedTools: ["tool-chatgpt"],
-    steps: [
-      { id: "s1", title: "Repérer les tâches répétitives", content: "Lister les tâches faites plus de 3 fois par semaine, identiques à chaque fois." },
-      { id: "s2", title: "Prioriser par gain de temps", content: "Classer ces tâches selon le temps qu'elles prennent et la facilité à les automatiser." },
-      { id: "s3", title: "Automatiser la première", content: "Mettre en place l'automatisation la plus simple et la plus rentable en premier." },
-    ],
-    tips: ["Commencez toujours par la tâche la plus simple à automatiser, pas la plus impressionnante."],
-    commonMistakes: ["Vouloir tout automatiser d'un coup avant d'avoir validé une première automatisation."],
-    checklist: ["Tâches répétitives listées", "Priorités définies", "Première automatisation en place"],
-    isPremium: false,
-  },
-  {
     id: "m-gtd-methode",
     slug: "appliquer-la-methode-gtd",
     title: "Appliquer la méthode GTD (Getting Things Done)",
@@ -1105,25 +1029,6 @@ export const missions: Mission[] = [
   },
 
   // --- Développement (2 gratuites, 3 premium) ---
-  {
-    id: "m-structurer-projet-web",
-    slug: "structurer-un-projet-web-de-zero",
-    title: "Structurer un projet web de zéro",
-    description: "Posez des fondations solides avant d'écrire la moindre ligne de code : architecture, stack, priorités.",
-    categorySlug: "developpement",
-    level: "DEBUTANT",
-    estimatedMinutes: 90,
-    recommendedTools: ["tool-chatgpt"],
-    steps: [
-      { id: "s1", title: "Définir le périmètre", content: "Lister les fonctionnalités essentielles pour une première version, et celles à reporter." },
-      { id: "s2", title: "Choisir la stack", content: "Sélectionner des technologies simples et bien documentées plutôt que les plus récentes." },
-      { id: "s3", title: "Découper en tâches", content: "Transformer le périmètre en une liste de tâches réalisables en une session chacune." },
-    ],
-    tips: ["Une V1 trop ambitieuse ne sort jamais — coupez large dans le périmètre."],
-    commonMistakes: ["Choisir une stack complexe pour un projet simple."],
-    checklist: ["Périmètre V1 défini", "Stack choisie", "Tâches découpées"],
-    isPremium: false,
-  },
   {
     id: "m-kanban-avance",
     slug: "mettre-en-place-un-kanban-avance",
@@ -1186,25 +1091,6 @@ export const missions: Mission[] = [
   },
 
   // --- Création (2 gratuites, 4 premium) ---
-  {
-    id: "m-identite-visuelle",
-    slug: "creer-une-identite-visuelle",
-    title: "Créer une identité visuelle",
-    description: "Définissez logo, couleurs et typographie cohérents pour votre marque, avec l'IA comme assistant créatif.",
-    categorySlug: "creation",
-    level: "DEBUTANT",
-    estimatedMinutes: 100,
-    recommendedTools: ["tool-chatgpt"],
-    steps: [
-      { id: "s1", title: "Positionnement de marque", content: "Définir 3 mots qui décrivent l'identité recherchée (ex. premium, chaleureux, moderne)." },
-      { id: "s2", title: "Palette et typographie", content: "Choisir 2-3 couleurs et 2 polices cohérentes avec ce positionnement." },
-      { id: "s3", title: "Déclinaisons", content: "Appliquer l'identité à un logo simple, une carte de visite et une bannière réseaux sociaux." },
-    ],
-    tips: ["Une identité forte tient sur 3 couleurs maximum."],
-    commonMistakes: ["Changer de direction visuelle à chaque nouveau support."],
-    checklist: ["3 mots de positionnement définis", "Palette choisie", "Logo et déclinaisons créés"],
-    isPremium: false,
-  },
   {
     id: "m-prompt-chaining",
     slug: "maitriser-le-prompt-chaining",
@@ -1288,25 +1174,6 @@ export const missions: Mission[] = [
 
   // --- Études (2 gratuites, 3 premium) ---
   {
-    id: "m-soutenance",
-    slug: "preparer-sa-soutenance",
-    title: "Préparer une soutenance",
-    description: "Structurez votre présentation, anticipez les questions, gagnez en assurance.",
-    categorySlug: "etudes",
-    level: "DEBUTANT",
-    estimatedMinutes: 120,
-    recommendedTools: ["tool-chatgpt", "tool-heygen"],
-    steps: [
-      { id: "s1", title: "Structurer le plan", content: "Construire une trame en 5 parties claires." },
-      { id: "s2", title: "Slides", content: "Créer un support visuel épuré." },
-      { id: "s3", title: "Questions du jury", content: "Générer les questions probables avec l'IA et préparer les réponses." },
-    ],
-    tips: ["Répéter à voix haute, pas seulement relire."],
-    commonMistakes: ["Trop de texte sur les slides."],
-    checklist: ["Plan validé", "Slides prêtes", "Questions anticipées"],
-    isPremium: false,
-  },
-  {
     id: "m-test-unitaires",
     slug: "ecrire-des-tests-unitaires-efficaces",
     title: "Écrire des tests unitaires efficaces",
@@ -1327,24 +1194,4 @@ export const missions: Mission[] = [
     isPremium: true,
   },
 
-  // --- IA (2 gratuites, 4 premium) ---
-  {
-    id: "m-bases-prompt-engineering",
-    slug: "apprendre-les-bases-du-prompt-engineering",
-    title: "Apprendre les bases du Prompt Engineering",
-    description: "Comprenez les principes qui font qu'un prompt fonctionne, pour obtenir des réponses fiables à chaque fois.",
-    categorySlug: "ia",
-    level: "DEBUTANT",
-    estimatedMinutes: 60,
-    recommendedTools: ["tool-chatgpt"],
-    steps: [
-      { id: "s1", title: "Donner du contexte", content: "Toujours préciser le rôle, l'objectif et le public visé dans le prompt." },
-      { id: "s2", title: "Être spécifique", content: "Remplacer les demandes vagues par des instructions précises et des exemples." },
-      { id: "s3", title: "Itérer", content: "Affiner le prompt en fonction de la réponse obtenue plutôt que de tout réécrire." },
-    ],
-    tips: ["Un bon prompt répond à 3 questions : qui, pour qui, dans quel but."],
-    commonMistakes: ["Attendre une réponse parfaite du premier coup sans itérer."],
-    checklist: ["Contexte donné", "Instruction précise formulée", "Prompt affiné après un premier essai"],
-    isPremium: false,
-  },
 ];
