@@ -42,7 +42,7 @@ export const quizStages: QuizStageData[] = [
     level: "INTERMEDIAIRE",
     order: 3,
     questionCount: 10,
-    isPremium: true,
+    isPremium: false,
   },
   {
     id: "qs-ia-avance",
@@ -53,6 +53,6 @@ export const quizStages: QuizStageData[] = [
     level: "AVANCE",
     order: 4,
     questionCount: 10,
-    isPremium: true,
+    isPremium: false,
   },
 ];

@@ -137,7 +137,15 @@ async function main() {
   for (const stage of quizStages) {
     await prisma.quizStage.upsert({
       where: { slug: stage.slug },
-      update: {},
+      update: {
+        title: stage.title,
+        description: stage.description,
+        topic: stage.topic,
+        level: stage.level,
+        order: stage.order,
+        questionCount: stage.questionCount,
+        isPremium: stage.isPremium,
+      },
       create: {
         id: stage.id,
         slug: stage.slug,
