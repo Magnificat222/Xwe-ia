@@ -8,7 +8,7 @@ export default async function ParcoursPage() {
   const paths = await prisma.learningPath.findMany({
     where: { isPublished: true },
     include: { missions: true },
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ isPremium: "asc" }, { createdAt: "desc" }],
   });
 
   return (

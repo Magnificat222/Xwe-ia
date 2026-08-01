@@ -5,6 +5,7 @@ import { tools } from "../lib/data/tools";
 import { prompts } from "../lib/data/prompts";
 import { learningPaths } from "../lib/data/paths";
 import { ebooks } from "../lib/data/ebooks";
+import { quizStages } from "../lib/data/quiz-stages";
 
 const prisma = new PrismaClient();
 
@@ -128,6 +129,25 @@ async function main() {
         fileName: ebook.fileName,
         pageCount: ebook.pageCount,
         isPremium: ebook.isPremium,
+      },
+    });
+  }
+
+  console.log("Seeding quiz stages...");
+  for (const stage of quizStages) {
+    await prisma.quizStage.upsert({
+      where: { slug: stage.slug },
+      update: {},
+      create: {
+        id: stage.id,
+        slug: stage.slug,
+        title: stage.title,
+        description: stage.description,
+        topic: stage.topic,
+        level: stage.level,
+        order: stage.order,
+        questionCount: stage.questionCount,
+        isPremium: stage.isPremium,
       },
     });
   }

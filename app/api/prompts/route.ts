@@ -10,11 +10,11 @@ export async function GET() {
     const subscription = await prisma.subscription.findUnique({
       where: { userId: session.user.id },
     });
-    isPremium = subscription?.plan === "PREMIUM";
+    isPremium = subscription?.plan === "PREMIUM" || session.user.role === "ADMIN";
   }
 
   const [prompts, tools] = await Promise.all([
-    prisma.prompt.findMany({ orderBy: { createdAt: "desc" } }),
+    prisma.prompt.findMany({ orderBy: [{ isPremium: "asc" }, { createdAt: "desc" }] }),
     prisma.tool.findMany({ select: { id: true, name: true } }),
   ]);
 

@@ -26,7 +26,7 @@ export default async function MissionDetailPage({
     const subscription = await prisma.subscription.findUnique({
       where: { userId: session.user.id },
     });
-    isPremiumUser = subscription?.plan === "PREMIUM";
+    isPremiumUser = subscription?.plan === "PREMIUM" || session.user.role === "ADMIN";
 
     // Fire-and-forget: log this view in History without blocking the render.
     prisma.history

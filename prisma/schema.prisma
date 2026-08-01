@@ -51,6 +51,9 @@ model User {
   accounts      Account[]
   sessions      Session[]
   supportMessages SupportMessage[]
+  quizAttempts     QuizAttempt[]
+  duelsAsChallenger Duel[] @relation("DuelChallenger")
+  duelsAsOpponent   Duel[] @relation("DuelOpponent")
 }
 
 // --- NextAuth / Auth.js required models ---
@@ -266,4 +269,95 @@ model Ebook {
   pageCount   Int?
   isPremium   Boolean  @default(true)
   createdAt   DateTime @default(now())
+}
+
+enum QuizBadgeTier {
+  BRONZE
+  SILVER
+  GOLD
+}
+
+enum DuelMode {
+  ASYNC
+  LIVE
+}
+
+enum DuelStatus {
+  PENDING // challenge sent, waiting for the opponent to play
+  IN_PROGRESS // reserved for LIVE mode (not yet implemented)
+  COMPLETED
+  DECLINED
+  EXPIRED
+}
+
+// A themed level of the Quiz Arena — e.g. "Bases de l'IA". Each stage is
+// played in sets of (at least) 10 questions, generated fresh by Gemini
+// every time so the same 10 questions don't keep coming back.
+model QuizStage {
+  id            String       @id @default(cuid())
+  slug          String       @unique
+  title         String
+  description   String       @db.Text
+  topic         String // seed fed to Gemini to keep generated questions on-theme
+  level         MissionLevel @default(DEBUTANT)
+  order         Int          @default(0)
+  questionCount Int          @default(10)
+  isPremium     Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+
+  attempts QuizAttempt[]
+  duels    Duel[]
+}
+
+// One playthrough of a stage: a freshly-generated question set plus the
+// user's answers, score and timing.
+model QuizAttempt {
+  id              String         @id @default(cuid())
+  userId          String
+  stageId         String
+  questions       Json // generated QuizQuestionData[] (includes correct answer + explanation)
+  answers         Json? // number[] while in progress / once submitted
+  score           Int            @default(0) // points from correct answers
+  speedBonus      Int            @default(0)
+  totalScore      Int            @default(0)
+  badge           QuizBadgeTier?
+  startedAt       DateTime       @default(now())
+  completedAt     DateTime?
+  durationSeconds Int?
+
+  user  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stage QuizStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+
+  duelAsChallenger Duel[] @relation("ChallengerAttempt")
+  duelAsOpponent   Duel[] @relation("OpponentAttempt")
+
+  @@index([userId])
+  @@index([stageId])
+}
+
+// A 1v1 challenge on a given stage. Async today (each plays on their own
+// time, then scores are compared); the `mode` field already distinguishes
+// LIVE so a real-time version can be added later without a schema change.
+model Duel {
+  id                  String     @id @default(cuid())
+  stageId             String
+  mode                DuelMode   @default(ASYNC)
+  status              DuelStatus @default(PENDING)
+  challengerId        String
+  opponentId          String
+  challengerAttemptId String?    @unique
+  opponentAttemptId   String?    @unique
+  winnerId            String?
+  createdAt           DateTime   @default(now())
+  respondedAt         DateTime?
+  completedAt         DateTime?
+
+  stage             QuizStage    @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  challenger        User         @relation("DuelChallenger", fields: [challengerId], references: [id], onDelete: Cascade)
+  opponent          User         @relation("DuelOpponent", fields: [opponentId], references: [id], onDelete: Cascade)
+  challengerAttempt QuizAttempt? @relation("ChallengerAttempt", fields: [challengerAttemptId], references: [id], onDelete: SetNull)
+  opponentAttempt   QuizAttempt? @relation("OpponentAttempt", fields: [opponentAttemptId], references: [id], onDelete: SetNull)
+
+  @@index([challengerId])
+  @@index([opponentId])
 }

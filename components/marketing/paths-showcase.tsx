@@ -19,7 +19,9 @@ export function PathsShowcase() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
-          {learningPaths.map((path) => (
+          {[...learningPaths]
+            .sort((a, b) => Number(a.isPremium) - Number(b.isPremium))
+            .map((path) => (
             <Link key={path.id} href={`/parcours/${path.slug}`}>
               <Card className="flex h-full flex-col justify-between transition-colors hover:border-or/30">
                 <div>

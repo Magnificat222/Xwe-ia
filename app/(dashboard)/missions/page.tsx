@@ -16,7 +16,7 @@ export default async function MissionsPage({
         ...(categorie ? { category: { slug: categorie } } : {}),
       },
       include: { category: true },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ level: "asc" }, { isPremium: "asc" }, { createdAt: "desc" }],
     }),
     prisma.category.findMany({ orderBy: { name: "asc" } }),
   ]);
