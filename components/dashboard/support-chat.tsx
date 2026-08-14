@@ -63,7 +63,7 @@ export function SupportChat() {
   };
 
   return (
-    <div className="flex h-[65vh] flex-col rounded-card border border-ivoire/10 bg-noir-soft">
+    <div className="flex h-[65vh] flex-col rounded-card border border-ivoire/10 bg-noir-elevated">
       <div className="flex-1 space-y-3 overflow-y-auto p-4">
         {messages.length === 0 && (
           <p className="text-center text-sm text-ivoire-dim">
@@ -79,7 +79,7 @@ export function SupportChat() {
               <div
                 className={cn(
                   "max-w-[75%] rounded-lg px-3 py-2 text-sm",
-                  m.senderRole === "AI" && "bg-violet-soft/50 text-ivoire",
+                  m.senderRole === "AI" && "bg-feuillage-soft/50 text-ivoire",
                   m.senderRole === "ADMIN" && "bg-or text-noir",
                   m.senderRole === "USER" && (isMine ? "bg-or text-noir" : "bg-ivoire/8 text-ivoire")
                 )}

@@ -2,13 +2,13 @@ import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
-  tone?: "default" | "gold" | "violet";
+  tone?: "default" | "gold" | "feuillage";
 }
 
 const toneStyles = {
   default: "bg-ivoire/8 text-ivoire-dim border-ivoire/15",
   gold: "bg-or/12 text-or-vif border-or/30",
-  violet: "bg-violet-soft/40 text-ivoire border-violet-soft",
+  feuillage: "bg-feuillage-soft/40 text-ivoire border-feuillage",
 };
 
 export function Badge({ className, tone = "default", ...props }: BadgeProps) {

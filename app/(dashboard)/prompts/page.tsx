@@ -79,7 +79,7 @@ export default function PromptsPage() {
                 <Sparkles size={13} className="text-or" />
                 <span>Plus efficace avec :</span>
                 {prompt.recommendedToolNames.map((name) => (
-                  <Badge key={name} tone="violet">{name}</Badge>
+                  <Badge key={name} tone="feuillage">{name}</Badge>
                 ))}
               </div>
             )}

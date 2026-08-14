@@ -39,12 +39,12 @@ export default async function ParcoursDetailPage({
         <ol className="space-y-6">
           {path.missions.map(({ mission }, i) => (
             <li key={mission.id} className="relative flex items-start gap-5">
-              <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-or/40 bg-noir-soft font-mono text-xs text-or">
+              <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-or/40 bg-noir-elevated font-mono text-xs text-or">
                 {i + 1}
               </span>
               <Link
                 href={`/missions/${mission.slug}`}
-                className="flex-1 rounded-card border border-ivoire/10 bg-noir-soft p-4 transition-colors hover:border-or/30"
+                className="flex-1 rounded-card border border-ivoire/10 bg-noir-elevated p-4 transition-colors hover:border-or/30"
               >
                 <p className="font-display text-base text-ivoire">{mission.title}</p>
                 <p className="mt-1 flex items-center gap-1.5 text-xs text-ivoire-dim">

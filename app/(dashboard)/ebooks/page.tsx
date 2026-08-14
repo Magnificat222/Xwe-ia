@@ -54,7 +54,7 @@ export default async function EbooksPage() {
         {ebooks.map((ebook) => (
           <div
             key={ebook.id}
-            className="flex flex-col gap-4 rounded-xl border border-ivoire/10 bg-noir-soft/40 p-5 sm:flex-row sm:items-center sm:justify-between"
+            className="flex flex-col gap-4 rounded-xl border border-ivoire/10 bg-noir-elevated/40 p-5 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-or/10 text-or">

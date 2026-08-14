@@ -97,7 +97,7 @@ export function QuizPlayer({ stageId, duelId }: { stageId: string; duelId?: stri
 
   if (phase === "idle") {
     return (
-      <div className="rounded-xl border border-ivoire/10 bg-noir-soft/40 p-8 text-center">
+      <div className="rounded-xl border border-ivoire/10 bg-noir-elevated/40 p-8 text-center">
         {error && <p className="mb-4 text-sm text-red-400">{error}</p>}
         <p className="mb-4 text-sm text-ivoire-dim">
           Prêt·e ? Les questions sont générées à l'instant, spécialement pour cette partie.
@@ -111,7 +111,7 @@ export function QuizPlayer({ stageId, duelId }: { stageId: string; duelId?: stri
 
   if (phase === "loading") {
     return (
-      <div className="rounded-xl border border-ivoire/10 bg-noir-soft/40 p-8 text-center text-sm text-ivoire-dim">
+      <div className="rounded-xl border border-ivoire/10 bg-noir-elevated/40 p-8 text-center text-sm text-ivoire-dim">
         Génération des questions en cours...
       </div>
     );
@@ -120,7 +120,7 @@ export function QuizPlayer({ stageId, duelId }: { stageId: string; duelId?: stri
   if (phase === "playing" || phase === "submitting") {
     const q = questions[current];
     return (
-      <div className="rounded-xl border border-ivoire/10 bg-noir-soft/40 p-6 md:p-8">
+      <div className="rounded-xl border border-ivoire/10 bg-noir-elevated/40 p-6 md:p-8">
         <p className="mb-2 text-xs text-ivoire-dim">
           Question {current + 1} / {questions.length}
         </p>

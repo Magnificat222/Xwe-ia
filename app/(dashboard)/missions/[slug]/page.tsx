@@ -52,7 +52,7 @@ export default async function MissionDetailPage({
         <h1 className="font-display text-3xl text-ivoire">{mission.title}</h1>
         <p className="mt-3 text-ivoire-dim">{mission.description}</p>
 
-        <div className="mx-auto mt-8 max-w-md rounded-card border border-or/30 bg-noir-soft p-8">
+        <div className="mx-auto mt-8 max-w-md rounded-card border border-or/30 bg-noir-elevated p-8">
           <Lock className="mx-auto mb-4 text-or" size={28} />
           <p className="font-display text-lg text-ivoire">Mission réservée aux membres Premium</p>
           <p className="mt-2 text-sm text-ivoire-dim">
@@ -92,7 +92,7 @@ export default async function MissionDetailPage({
       <section className="mb-10 space-y-6">
         <h2 className="font-display text-xl text-ivoire">Étapes</h2>
         {steps.map((step, i) => (
-          <div key={step.id} className="rounded-card border border-ivoire/10 bg-noir-soft p-5">
+          <div key={step.id} className="rounded-card border border-ivoire/10 bg-noir-elevated p-5">
             <p className="font-mono text-xs text-or">Étape {i + 1}</p>
             <p className="mt-1 font-display text-base text-ivoire">{step.title}</p>
             <p className="mt-1.5 text-sm text-ivoire-dim">{step.content}</p>

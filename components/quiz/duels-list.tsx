@@ -52,7 +52,7 @@ export function DuelsList({ duels: initialDuels, myUserId }: { duels: DuelEntry[
         const isDraw = duel.status === "COMPLETED" && !duel.winnerId;
 
         return (
-          <div key={duel.id} className="rounded-lg border border-ivoire/10 bg-noir-soft/40 p-4">
+          <div key={duel.id} className="rounded-lg border border-ivoire/10 bg-noir-elevated/40 p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <Swords size={15} className="text-or" />
@@ -68,7 +68,7 @@ export function DuelsList({ duels: initialDuels, myUserId }: { duels: DuelEntry[
                 {STATUS_LABEL[duel.status] ?? duel.status}
                 {duel.status === "COMPLETED" && (
                   <span className="ml-2 font-medium text-or">
-                    {isDraw ? "Égalité" : iAmWinner ? "Vous avez gagné 🎉" : "Défaite"}
+                    {isDraw ? "Égalité" : iAmWinner ? "Vous avez gagné" : "Défaite"}
                   </span>
                 )}
               </p>

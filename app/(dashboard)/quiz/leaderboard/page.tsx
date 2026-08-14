@@ -69,7 +69,7 @@ export default async function QuizLeaderboardPage() {
               <div
                 key={entry.userId}
                 className={`flex items-center justify-between rounded-lg border px-4 py-3 ${
-                  isMe ? "border-or/40 bg-or/5" : "border-ivoire/10 bg-noir-soft/40"
+                  isMe ? "border-or/40 bg-or/5" : "border-ivoire/10 bg-noir-elevated/40"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -81,7 +81,7 @@ export default async function QuizLeaderboardPage() {
                       {entry.name} {isMe && <span className="text-xs text-or">(vous)</span>}
                     </p>
                     <p className="text-xs text-ivoire-dim">
-                      {entry.quizzesPlayed} quiz · 🥇 {entry.gold} · 🥈 {entry.silver} · 🥉 {entry.bronze}
+                      {entry.quizzesPlayed} quiz · Or {entry.gold} · Argent {entry.silver} · Bronze {entry.bronze}
                     </p>
                   </div>
                 </div>

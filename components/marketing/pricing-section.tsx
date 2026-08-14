@@ -50,7 +50,7 @@ export function PricingSection() {
         {plans.map((plan) => (
           <Card
             key={plan.name}
-            className={plan.highlighted ? "border-or/50 bg-violet/10" : undefined}
+            className={plan.highlighted ? "border-or/50 bg-braise/10" : undefined}
           >
             <div className="flex items-baseline justify-between">
               <div className="flex items-center gap-2">

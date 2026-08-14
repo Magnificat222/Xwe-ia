@@ -40,7 +40,7 @@ export default async function AdminUsersPage() {
                   )}
                 </td>
                 <td className="px-4 py-3">
-                  {user.role === "ADMIN" ? <Badge tone="violet">Admin</Badge> : <Badge>Utilisateur</Badge>}
+                  {user.role === "ADMIN" ? <Badge tone="feuillage">Admin</Badge> : <Badge>Utilisateur</Badge>}
                 </td>
               </tr>
             ))}

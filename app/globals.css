@@ -1,22 +1,26 @@
 @import "tailwindcss";
 
 /*
-  Design tokens — MABIDOUZ AI Hub
-  Palette (from brief): noir profond, blanc cassé, doré élégant, violet foncé.
+  Design tokens — Xwé IA
+  Palette grounded in the actual logo marks: burnt-orange sun, deep-green
+  circuitry, gold filament, on near-black. Violet (a leftover from an
+  earlier brief) is retired — nothing in the brand ever used it.
   Display face: Fraunces (editorial serif, used sparingly for headlines)
   Body face: Inter
   Utility/mono face: IBM Plex Mono (prompts, stats, code)
 */
 @theme {
-  --color-noir: #0a0a0d;
-  --color-noir-soft: #131318;
-  --color-noir-elevated: #1b1b22;
-  --color-ivoire: #f3efe8;
-  --color-ivoire-dim: #cfcac0;
+  --color-noir: #100d0a;
+  --color-noir-soft: #1a1512;
+  --color-noir-elevated: #241d17;
+  --color-ivoire: #f5efe4;
+  --color-ivoire-dim: #b8ab96;
   --color-or: #c9a24b;
   --color-or-vif: #e6c675;
-  --color-violet: #241238;
-  --color-violet-soft: #3a1f57;
+  --color-braise: #c9531f;
+  --color-braise-soft: #7a3315;
+  --color-feuillage: #3a7a52;
+  --color-feuillage-soft: #1e4530;
 
   --font-display: "Fraunces", ui-serif, Georgia, serif;
   --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -30,15 +34,17 @@ html {
 }
 
 .light {
-  --color-noir: #ffffff;
-  --color-noir-soft: #f5f4f1;
-  --color-noir-elevated: #ebe9e4;
-  --color-ivoire: #17161b;
-  --color-ivoire-dim: #57544c;
+  --color-noir: #fefcf8;
+  --color-noir-soft: #f7f1e6;
+  --color-noir-elevated: #efe6d4;
+  --color-ivoire: #1c1712;
+  --color-ivoire-dim: #6b6153;
   --color-or: #a9803a;
   --color-or-vif: #8f6a2c;
-  --color-violet: #ece6f5;
-  --color-violet-soft: #ddd0ef;
+  --color-braise: #b3410f;
+  --color-braise-soft: #e6c6b3;
+  --color-feuillage: #2c5f3e;
+  --color-feuillage-soft: #cfe0d3;
   color-scheme: light;
 }
 
@@ -54,6 +60,20 @@ body {
   color: var(--color-noir);
 }
 
+/* Signature element: the "liseré" — a thin repeating triangle band lifted
+   from the logo's own base ornament. Used as a deliberate seam between
+   sections instead of a plain hairline rule, so the brand mark's own
+   geometry recurs through the product rather than sitting only in the logo. */
+.liseré {
+  height: 6px;
+  background-image: linear-gradient(135deg, var(--color-or) 25%, transparent 25%),
+    linear-gradient(225deg, var(--color-or) 25%, transparent 25%);
+  background-position: 0 0;
+  background-size: 12px 12px;
+  background-repeat: repeat-x;
+  opacity: 0.5;
+}
+
 /* Signature element: the "trajectoire" — a stepped path connecting mission
    nodes, used on the landing hero to literalize "objectif -> missions ->
    résultat". Order here is real (a guided sequence), so numbering earns
@@ -62,7 +82,7 @@ body {
   background: linear-gradient(
     180deg,
     var(--color-or) 0%,
-    var(--color-violet-soft) 100%
+    var(--color-braise) 100%
   );
 }
 

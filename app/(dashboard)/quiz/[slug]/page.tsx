@@ -60,7 +60,7 @@ export default async function QuizStagePage({
           <QuizPlayer stageId={stage.id} duelId={duelId} />
 
           {!duelId && (
-            <div className="rounded-xl border border-ivoire/10 bg-noir-soft/40 p-5">
+            <div className="rounded-xl border border-ivoire/10 bg-noir-elevated/40 p-5">
               <p className="mb-3 text-sm font-medium text-ivoire">Défier un membre sur cette étape</p>
               <ChallengeForm stageId={stage.id} />
             </div>
