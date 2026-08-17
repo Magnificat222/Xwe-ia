@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { CategoryDonut } from "@/components/dashboard/category-donut";
 import { Clock, Target, Trophy, Medal, ArrowRight } from "lucide-react";
 import { formatMinutes } from "@/lib/utils";
+import { parseDashboardPrefs } from "@/lib/dashboard-prefs";
 
 const CHART_COLORS = ["#c9531f", "#c9a24b", "#3a7a52", "#8a7c68"];
 
@@ -23,6 +24,7 @@ export default async function DashboardPage() {
     allMissions,
     completedProgress,
     quizAttempts,
+    user,
   ] = await Promise.all([
     prisma.mission.count({ where: { isPublished: true } }),
     prisma.progress.count({ where: { userId, completed: true } }),
@@ -41,7 +43,10 @@ export default async function DashboardPage() {
       where: { userId, completedAt: { not: null } },
       select: { totalScore: true, badge: true },
     }),
+    prisma.user.findUnique({ where: { id: userId }, select: { dashboardPrefs: true } }),
   ]);
+
+  const prefs = parseDashboardPrefs(user?.dashboardPrefs);
 
   const recentMissions = history.map((h) => h.mission);
   const recommended = allMissions.slice(0, 3);
@@ -64,7 +69,6 @@ export default async function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-8 pt-2">
-      {/* Welcome hero */}
       <div
         className="relative overflow-hidden rounded-2xl p-8 md:p-10"
         style={{ background: "linear-gradient(135deg, #c9531f 0%, #1e4530 100%)" }}
@@ -98,7 +102,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Stat row */}
+      {prefs.showStats && (
       <div className="grid gap-4 sm:grid-cols-3">
         <Card className="flex items-center gap-4">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-braise/10 text-braise">
@@ -128,9 +132,11 @@ export default async function DashboardPage() {
           </div>
         </Card>
       </div>
+      )}
 
-      {/* Progress + activity */}
+      {(prefs.showCategoryChart || prefs.showActivity) && (
       <div className="grid gap-4 md:grid-cols-5">
+        {prefs.showCategoryChart && (
         <Card className="md:col-span-3">
           <p className="mb-5 font-display text-lg text-ivoire">Répartition par catégorie</p>
           <CategoryDonut
@@ -139,7 +145,9 @@ export default async function DashboardPage() {
             centerLabel={`${completedCount}/${totalMissions}`}
           />
         </Card>
+        )}
 
+        {prefs.showActivity && (
         <Card className="md:col-span-2">
           <p className="mb-4 font-display text-lg text-ivoire">Activité récente</p>
           {recentMissions.length === 0 ? (
@@ -163,9 +171,11 @@ export default async function DashboardPage() {
             </div>
           )}
         </Card>
+        )}
       </div>
+      )}
 
-      {/* Recommended */}
+      {prefs.showRecommended && (
       <section>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-display text-xl text-ivoire">Recommandé pour vous</h2>
@@ -190,6 +200,7 @@ export default async function DashboardPage() {
           ))}
         </div>
       </section>
+      )}
     </div>
   );
 }

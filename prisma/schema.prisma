@@ -41,6 +41,7 @@ model User {
   password      String? // hashed with bcrypt; null when using OAuth
   image         String?
   role          Role      @default(USER)
+  dashboardPrefs Json?    // which dashboard sections are shown, and in what order
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -244,6 +245,7 @@ model SupportMessage {
   authorName String
   senderRole ChatSenderRole
   content    String         @db.Text
+  imageUrl   String?        @db.Text // base64 data URL, resized client-side before send
   createdAt  DateTime       @default(now())
 
   author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)

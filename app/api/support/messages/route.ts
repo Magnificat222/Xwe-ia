@@ -39,22 +39,37 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Réservé aux membres Premium." }, { status: 403 });
   }
 
-  const { content } = await request.json();
-  if (!content?.trim()) {
+  const { content, imageUrl } = await request.json();
+  const trimmedContent = typeof content === "string" ? content.trim() : "";
+
+  if (!trimmedContent && !imageUrl) {
     return NextResponse.json({ error: "Message vide." }, { status: 400 });
+  }
+  if (typeof imageUrl === "string" && imageUrl.length > 3_000_000) {
+    return NextResponse.json({ error: "Image trop volumineuse." }, { status: 400 });
+  }
+  if (typeof imageUrl === "string" && !imageUrl.startsWith("data:image/")) {
+    return NextResponse.json({ error: "Format d'image invalide." }, { status: 400 });
   }
 
   const senderRole = session.user.role === "ADMIN" ? "ADMIN" : "USER";
   const authorName = session.user.name ?? session.user.email ?? "Membre Xwé IA";
 
   const message = await prisma.supportMessage.create({
-    data: { authorId: session.user.id, authorName, senderRole, content },
+    data: {
+      authorId: session.user.id,
+      authorName,
+      senderRole,
+      content: trimmedContent,
+      imageUrl: imageUrl ?? null,
+    },
   });
 
-  // Only auto-reply to regular members, not to the admin's own messages,
-  // so Gemini doesn't talk over her when she's actively answering.
-  if (senderRole === "USER") {
-    const aiText = await generateAIReply(content);
+  // Only auto-reply to regular members with actual text, not to the admin's
+  // own messages, and not to image-only posts (Gemini here is text-only —
+  // replying to a picture it can't see would just be a confusing guess).
+  if (senderRole === "USER" && trimmedContent) {
+    const aiText = await generateAIReply(trimmedContent);
     if (aiText) {
       await prisma.supportMessage.create({
         data: {

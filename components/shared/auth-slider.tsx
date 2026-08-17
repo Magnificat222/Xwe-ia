@@ -197,7 +197,7 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
         <Divider />
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <FormField label="Nom complet" type="text" placeholder="Votre nom" error={errors.name?.message} {...register("name")} />
+        <FormField label="Pseudo" type="text" placeholder="Comment vous appeler ?" error={errors.name?.message} {...register("name")} />
         <FormField label="E-mail" type="email" placeholder="votre@email.com" error={errors.email?.message} {...register("email")} />
         <FormField label="Mot de passe" type="password" placeholder="8 caractères minimum" error={errors.password?.message} {...register("password")} />
         {serverError && <p className="text-sm text-red-400/80">{serverError}</p>}

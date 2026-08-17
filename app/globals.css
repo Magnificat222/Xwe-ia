@@ -61,9 +61,7 @@ body {
 }
 
 /* Signature element: the "liseré" — a thin repeating triangle band lifted
-   from the logo's own base ornament. Used as a deliberate seam between
-   sections instead of a plain hairline rule, so the brand mark's own
-   geometry recurs through the product rather than sitting only in the logo. */
+   from the logo's own base ornament. */
 .liseré {
   height: 6px;
   background-image: linear-gradient(135deg, var(--color-or) 25%, transparent 25%),
@@ -74,10 +72,6 @@ body {
   opacity: 0.5;
 }
 
-/* Signature element: the "trajectoire" — a stepped path connecting mission
-   nodes, used on the landing hero to literalize "objectif -> missions ->
-   résultat". Order here is real (a guided sequence), so numbering earns
-   its place. */
 .trajectoire-line {
   background: linear-gradient(
     180deg,
