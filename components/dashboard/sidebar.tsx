@@ -3,11 +3,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { ShieldCheck } from "lucide-react";
 import { dashboardNavLinks } from "@/components/dashboard/nav-links";
 import { SignOutButton } from "@/components/shared/sign-out-button";
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
 
   return (
     <aside className="hidden w-64 shrink-0 flex-col bg-noir md:flex">
@@ -47,6 +51,15 @@ export function Sidebar() {
             </Link>
           );
         })}
+        {isAdmin && (
+          <Link
+            href="/admin"
+            className="relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-or transition-colors hover:bg-or/10"
+          >
+            <ShieldCheck size={18} strokeWidth={1.5} />
+            Administration
+          </Link>
+        )}
       </nav>
 
       <div className="border-t border-ivoire/8 p-3">

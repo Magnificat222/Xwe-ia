@@ -60,6 +60,14 @@ body {
   color: var(--color-noir);
 }
 
+/* Reading-font preference, set from Settings. Default (no class) is Inter. */
+.font-pref-atkinson {
+  --font-body: var(--font-body-atkinson);
+}
+.font-pref-lora {
+  --font-body: var(--font-body-lora);
+}
+
 /* Signature element: the "liseré" — a thin repeating triangle band lifted
    from the logo's own base ornament. */
 .liseré {

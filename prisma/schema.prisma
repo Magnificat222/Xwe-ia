@@ -267,7 +267,8 @@ model Ebook {
   slug        String   @unique
   title       String
   description String   @db.Text
-  fileName    String // filename inside /content/ebooks
+  fileName    String? // filename inside /content/ebooks (seeded ebooks only)
+  fileData    String?  @db.Text // base64 PDF data (ebooks added from the admin panel)
   pageCount   Int?
   isPremium   Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -362,4 +363,11 @@ model Duel {
 
   @@index([challengerId])
   @@index([opponentId])
+}
+
+// Singleton row (id is always "singleton") holding site-wide settings the
+// admin can adjust without touching code — e.g. the Premium price.
+model SiteSettings {
+  id              String @id @default("singleton")
+  premiumPriceXof Int    @default(3200)
 }

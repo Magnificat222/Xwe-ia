@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { NameForm } from "@/components/settings/name-form";
 import { PasswordForm } from "@/components/settings/password-form";
 import { ThemeSection } from "@/components/settings/theme-section";
+import { FontSection } from "@/components/settings/font-section";
+import { AvatarForm } from "@/components/settings/avatar-form";
 import { DashboardLayoutForm } from "@/components/settings/dashboard-layout-form";
 import { parseDashboardPrefs } from "@/lib/dashboard-prefs";
 
@@ -46,6 +48,11 @@ export default async function ProfilePage() {
       </Card>
 
       <Card>
+        <p className="mb-3 font-display text-lg text-ivoire">Photo de profil</p>
+        <AvatarForm currentImage={user?.image ?? null} />
+      </Card>
+
+      <Card>
         <p className="mb-3 font-display text-lg text-ivoire">Pseudo</p>
         <NameForm initialName={user?.name ?? ""} />
       </Card>
@@ -58,6 +65,14 @@ export default async function ProfilePage() {
       <Card>
         <p className="mb-3 font-display text-lg text-ivoire">Apparence</p>
         <ThemeSection />
+      </Card>
+
+      <Card>
+        <p className="mb-1 font-display text-lg text-ivoire">Police de lecture</p>
+        <p className="mb-4 text-sm text-ivoire-dim">
+          Choisissez la police utilisée pour le texte courant du site.
+        </p>
+        <FontSection />
       </Card>
 
       <Card>

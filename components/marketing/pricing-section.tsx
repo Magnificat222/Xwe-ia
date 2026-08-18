@@ -1,44 +1,41 @@
-"use client";
-
 import { Check, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { KkiapayCheckoutButton } from "@/components/marketing/kkiapay-checkout-button";
-import { PREMIUM_AMOUNT_XOF } from "@/lib/constants";
 
-const plans = [
-  {
-    name: "Gratuit",
-    price: "0",
-    description: "Pour découvrir la méthode et démarrer vos premières missions.",
-    features: [
-      "Accès aux missions gratuites",
-      "Bibliothèque de prompts (sélection)",
-      "Suivi de progression",
-      "1 parcours gratuit",
-    ],
-    cta: "Commencer gratuitement",
-    highlighted: false,
-  },
-  {
-    name: "Premium",
-    price: PREMIUM_AMOUNT_XOF.toString(),
-    description: "Pour aller jusqu'au résultat, sur tous vos objectifs.",
-    features: [
-      "Toutes les missions et parcours débloqués",
-      "Bibliothèque de prompts complète",
-      "Tous les outils IA recommandés",
-      "Ebooks téléchargeables",
-      "Salon Premium avec l'IA et l'équipe Xwé IA",
-      "Badges et statistiques avancées",
-    ],
-    cta: "Passer Premium",
-    highlighted: true,
-  },
-];
+export function PricingSection({ premiumPriceXof }: { premiumPriceXof: number }) {
+  const plans = [
+    {
+      name: "Gratuit",
+      price: "0",
+      description: "Pour découvrir la méthode et démarrer vos premières missions.",
+      features: [
+        "Accès aux missions gratuites",
+        "Bibliothèque de prompts (sélection)",
+        "Suivi de progression",
+        "1 parcours gratuit",
+      ],
+      cta: "Commencer gratuitement",
+      highlighted: false,
+    },
+    {
+      name: "Premium",
+      price: premiumPriceXof.toString(),
+      description: "Pour aller jusqu'au résultat, sur tous vos objectifs.",
+      features: [
+        "Toutes les missions et parcours débloqués",
+        "Bibliothèque de prompts complète",
+        "Tous les outils IA recommandés",
+        "Ebooks téléchargeables",
+        "Salon Premium avec l'IA et l'équipe Xwé IA",
+        "Badges et statistiques avancées",
+      ],
+      cta: "Passer Premium",
+      highlighted: true,
+    },
+  ];
 
-export function PricingSection() {
   return (
     <section id="tarifs" className="mx-auto max-w-6xl px-6 py-20">
       <div className="mb-10 max-w-lg">
@@ -72,7 +69,7 @@ export function PricingSection() {
             </ul>
             {plan.highlighted ? (
               <div className="mt-6">
-                <KkiapayCheckoutButton />
+                <KkiapayCheckoutButton amountXof={premiumPriceXof} />
               </div>
             ) : (
               <Link href="/register" className="mt-6 block">

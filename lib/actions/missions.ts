@@ -1,8 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import type { MissionStep } from "@/types";
 
 async function requireAdmin() {
   const session = await auth();
@@ -19,6 +21,11 @@ export interface MissionFormData {
   categoryId: string;
   level: "DEBUTANT" | "INTERMEDIAIRE" | "AVANCE";
   estimatedMinutes: number;
+  recommendedTools: string[];
+  steps: MissionStep[];
+  tips: string[];
+  commonMistakes: string[];
+  checklist: string[];
   isPremium: boolean;
   isPublished: boolean;
 }
@@ -29,25 +36,30 @@ export async function createMission(data: MissionFormData) {
   await prisma.mission.create({
     data: {
       ...data,
-      recommendedTools: [],
-      steps: [],
-      tips: [],
-      commonMistakes: [],
-      checklist: [],
+      steps: data.steps as unknown as object,
     },
   });
 
   revalidatePath("/admin/missions");
   revalidatePath("/missions");
+  redirect("/admin/missions");
 }
 
-export async function updateMission(id: string, data: Partial<MissionFormData>) {
+export async function updateMission(id: string, data: MissionFormData) {
   await requireAdmin();
 
-  await prisma.mission.update({ where: { id }, data });
+  await prisma.mission.update({
+    where: { id },
+    data: {
+      ...data,
+      steps: data.steps as unknown as object,
+    },
+  });
 
   revalidatePath("/admin/missions");
   revalidatePath("/missions");
+  revalidatePath(`/missions/${data.slug}`);
+  redirect("/admin/missions");
 }
 
 export async function deleteMission(id: string) {

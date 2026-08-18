@@ -5,7 +5,6 @@ import Script from "next/script";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import { PREMIUM_AMOUNT_XOF } from "@/lib/constants";
 
 declare global {
   interface Window {
@@ -14,7 +13,7 @@ declare global {
   }
 }
 
-export function KkiapayCheckoutButton() {
+export function KkiapayCheckoutButton({ amountXof }: { amountXof: number }) {
   const router = useRouter();
   const { data: session } = useSession();
   const [scriptReady, setScriptReady] = useState(false);
@@ -51,7 +50,7 @@ export function KkiapayCheckoutButton() {
     }
 
     window.openKkiapayWidget?.({
-      amount: PREMIUM_AMOUNT_XOF,
+      amount: amountXof,
       key: process.env.NEXT_PUBLIC_KKIAPAY_PUBLIC_KEY ?? "",
       sandbox: process.env.NEXT_PUBLIC_KKIAPAY_SANDBOX === "false" ? "false" : "true",
       data: session.user.id,
@@ -68,7 +67,7 @@ export function KkiapayCheckoutButton() {
         onLoad={() => setScriptReady(true)}
       />
       <Button className="w-full" onClick={handleClick} disabled={verifying}>
-        {verifying ? "Vérification..." : `Passer Premium — ${PREMIUM_AMOUNT_XOF} FCFA/mois`}
+        {verifying ? "Vérification..." : `Passer Premium — ${amountXof} FCFA/mois`}
       </Button>
     </>
   );

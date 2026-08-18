@@ -33,6 +33,24 @@ export async function GET(
     }
   }
 
+  // Ebooks added from the admin panel are stored directly in the database
+  // (fileData) so adding one never requires touching the filesystem or
+  // redeploying. The one seeded ebook still ships as a file for now.
+  if (ebook.fileData) {
+    const base64 = ebook.fileData.includes(",") ? ebook.fileData.split(",")[1] : ebook.fileData;
+    const buffer = Buffer.from(base64, "base64");
+    return new NextResponse(new Uint8Array(buffer), {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${ebook.slug}.pdf"`,
+      },
+    });
+  }
+
+  if (!ebook.fileName) {
+    return NextResponse.json({ error: "Aucun fichier associé à cet ebook." }, { status: 404 });
+  }
+
   // Guard against any path traversal — only a plain filename is ever valid.
   const safeFileName = path.basename(ebook.fileName);
   const filePath = path.join(process.cwd(), "content", "ebooks", safeFileName);

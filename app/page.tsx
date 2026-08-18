@@ -5,8 +5,11 @@ import { PathsShowcase } from "@/components/marketing/paths-showcase";
 import { PricingSection } from "@/components/marketing/pricing-section";
 import { Footer } from "@/components/marketing/footer";
 import { IntroSplash } from "@/components/marketing/intro-splash";
+import { getSiteSettings } from "@/lib/settings";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const settings = await getSiteSettings();
+
   return (
     <main>
       <IntroSplash />
@@ -14,7 +17,7 @@ export default function LandingPage() {
       <Hero />
       <CategoryGrid />
       <PathsShowcase />
-      <PricingSection />
+      <PricingSection premiumPriceXof={settings.premiumPriceXof} />
       <Footer />
     </main>
   );

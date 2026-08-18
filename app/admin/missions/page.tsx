@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,9 +15,11 @@ export default async function AdminMissionsPage() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-display text-2xl text-ivoire">Missions</h1>
-        <Button size="sm">
-          <Plus size={15} /> Nouvelle mission
-        </Button>
+        <Link href="/admin/missions/new">
+          <Button size="sm">
+            <Plus size={15} /> Nouvelle mission
+          </Button>
+        </Link>
       </div>
 
       <div className="overflow-hidden rounded-card border border-ivoire/10">
@@ -49,7 +52,9 @@ export default async function AdminMissionsPage() {
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex justify-end gap-2">
-                    <button className="text-ivoire-dim hover:text-or"><Pencil size={15} /></button>
+                    <Link href={`/admin/missions/${mission.id}/edit`} className="text-ivoire-dim hover:text-or">
+                      <Pencil size={15} />
+                    </Link>
                     <DeleteMissionButton missionId={mission.id} />
                   </div>
                 </td>
