@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { Menu, X, ShieldCheck } from "lucide-react";
 import { dashboardNavLinks } from "@/components/dashboard/nav-links";
 import { SignOutButton } from "@/components/shared/sign-out-button";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
 
   return (
     <div className="md:hidden">
@@ -56,6 +59,16 @@ export function MobileNav() {
                   {link.label}
                 </Link>
               ))}
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-or transition-colors hover:bg-or/10"
+                >
+                  <ShieldCheck size={18} strokeWidth={1.5} />
+                  Administration
+                </Link>
+              )}
               <div className="mt-2 border-t border-ivoire/10 pt-2">
                 <SignOutButton />
               </div>

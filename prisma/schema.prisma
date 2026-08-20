@@ -246,9 +246,13 @@ model SupportMessage {
   senderRole ChatSenderRole
   content    String         @db.Text
   imageUrl   String?        @db.Text // base64 data URL, resized client-side before send
+  editedAt   DateTime?
+  replyToId  String?
   createdAt  DateTime       @default(now())
 
-  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  author  User?            @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  replyTo SupportMessage?  @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies SupportMessage[] @relation("MessageReplies")
 
   @@index([createdAt])
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Send, Sparkles, ShieldCheck, Image as ImageIcon, X } from "lucide-react";
+import { Send, Sparkles, ShieldCheck, Image as ImageIcon, X, Reply, Pencil, Trash2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -13,14 +13,14 @@ interface ChatMessage {
   authorName: string;
   content: string;
   imageUrl: string | null;
+  editedAt: string | null;
+  replyTo: { id: string; authorName: string; content: string } | null;
   createdAt: string;
 }
 
 const POLL_INTERVAL_MS = 5000;
 const MAX_DIMENSION = 900;
 
-// Resizes/compresses the picked image client-side before it's ever sent —
-// keeps the payload light since it ends up stored as a data URL.
 function resizeImage(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -55,6 +55,9 @@ export function SupportChat() {
   const [input, setInput] = useState("");
   const [pendingImage, setPendingImage] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -92,12 +95,13 @@ export function SupportChat() {
     const res = await fetch("/api/support/messages", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: input, imageUrl: pendingImage }),
+      body: JSON.stringify({ content: input, imageUrl: pendingImage, replyToId: replyTo?.id ?? null }),
     });
 
     if (res.ok) {
       setInput("");
       setPendingImage(null);
+      setReplyTo(null);
       fetchMessages();
     } else {
       const { error } = await res.json();
@@ -105,6 +109,32 @@ export function SupportChat() {
     }
     setSending(false);
   };
+
+  const startEdit = (m: ChatMessage) => {
+    setEditingId(m.id);
+    setEditValue(m.content);
+  };
+
+  const saveEdit = async (id: string) => {
+    if (!editValue.trim()) return;
+    const res = await fetch(`/api/support/messages/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: editValue }),
+    });
+    if (res.ok) {
+      setEditingId(null);
+      fetchMessages();
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Supprimer ce message ?")) return;
+    const res = await fetch(`/api/support/messages/${id}`, { method: "DELETE" });
+    if (res.ok) fetchMessages();
+  };
+
+  const isAdmin = session?.user?.role === "ADMIN";
 
   return (
     <div className="flex h-[65vh] flex-col rounded-card border border-ivoire/10 bg-noir-elevated">
@@ -118,43 +148,102 @@ export function SupportChat() {
         )}
         {messages.map((m) => {
           const isMine = m.authorId === session?.user?.id;
+          const canModify = isMine && m.senderRole !== "AI";
+          const canDelete = isMine || isAdmin;
+          const isEditing = editingId === m.id;
+
           return (
-            <div key={m.id} className={cn("flex", isMine ? "justify-end" : "justify-start")}>
-              <div
-                className={cn(
-                  "max-w-[75%] rounded-lg px-3 py-2 text-sm",
-                  m.senderRole === "AI" && "bg-feuillage-soft/50 text-ivoire",
-                  m.senderRole === "ADMIN" && "bg-or text-noir",
-                  m.senderRole === "USER" && (isMine ? "bg-or text-noir" : "bg-ivoire/8 text-ivoire")
-                )}
-              >
-                <p className="mb-0.5 flex items-center gap-1.5 text-[11px] font-medium opacity-80">
-                  {m.senderRole === "AI" && <Sparkles size={11} />}
-                  {m.senderRole === "ADMIN" && <ShieldCheck size={11} />}
-                  {m.senderRole === "ADMIN" ? "Xwé IA (équipe)" : m.authorName}
-                </p>
-                {m.imageUrl && (
-                  <img
-                    src={m.imageUrl}
-                    alt="Image partagée"
-                    className="mb-1.5 max-h-64 rounded-md object-cover"
-                  />
-                )}
-                {m.content}
-                <p className="mt-1 text-[10px] opacity-60">
-                  {new Date(m.createdAt).toLocaleString("fr-FR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
+            <div key={m.id} className={cn("group flex", isMine ? "justify-end" : "justify-start")}>
+              <div className={cn("flex max-w-[80%] items-end gap-1.5", isMine && "flex-row-reverse")}>
+                <div
+                  className={cn(
+                    "rounded-lg px-3 py-2 text-sm",
+                    m.senderRole === "AI" && "bg-feuillage-soft/50 text-ivoire",
+                    m.senderRole === "ADMIN" && "bg-or text-noir",
+                    m.senderRole === "USER" && (isMine ? "bg-or text-noir" : "bg-ivoire/8 text-ivoire")
+                  )}
+                >
+                  <p className="mb-0.5 flex items-center gap-1.5 text-[11px] font-medium opacity-80">
+                    {m.senderRole === "AI" && <Sparkles size={11} />}
+                    {m.senderRole === "ADMIN" && <ShieldCheck size={11} />}
+                    {m.senderRole === "ADMIN" ? "Xwé IA (équipe)" : m.authorName}
+                  </p>
+
+                  {m.replyTo && (
+                    <div className="mb-1.5 rounded border-l-2 border-current/30 bg-black/10 px-2 py-1 text-xs opacity-75">
+                      <p className="font-medium">{m.replyTo.authorName}</p>
+                      <p className="line-clamp-1">{m.replyTo.content}</p>
+                    </div>
+                  )}
+
+                  {m.imageUrl && (
+                    <img
+                      src={m.imageUrl}
+                      alt="Image partagée"
+                      className="mb-1.5 max-h-64 rounded-md object-cover"
+                    />
+                  )}
+
+                  {isEditing ? (
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && saveEdit(m.id)}
+                        autoFocus
+                        className="rounded border border-current/30 bg-black/10 px-2 py-1 text-sm outline-none"
+                      />
+                      <button onClick={() => saveEdit(m.id)} title="Enregistrer">
+                        <Check size={14} />
+                      </button>
+                    </div>
+                  ) : (
+                    m.content
+                  )}
+
+                  <p className="mt-1 text-[10px] opacity-60">
+                    {new Date(m.createdAt).toLocaleString("fr-FR", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                    {m.editedAt && " · modifié"}
+                  </p>
+                </div>
+
+                <div className="flex shrink-0 gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                  <button onClick={() => setReplyTo(m)} title="Répondre" className="text-ivoire-dim hover:text-or">
+                    <Reply size={13} />
+                  </button>
+                  {canModify && (
+                    <button onClick={() => startEdit(m)} title="Modifier" className="text-ivoire-dim hover:text-or">
+                      <Pencil size={13} />
+                    </button>
+                  )}
+                  {canDelete && (
+                    <button onClick={() => handleDelete(m.id)} title="Supprimer" className="text-ivoire-dim hover:text-red-400">
+                      <Trash2 size={13} />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           );
         })}
         <div ref={bottomRef} />
       </div>
+
+      {replyTo && (
+        <div className="flex items-center justify-between border-t border-ivoire/10 px-3 pt-3 text-xs text-ivoire-dim">
+          <p className="line-clamp-1">
+            Réponse à <span className="text-ivoire">{replyTo.authorName}</span> — {replyTo.content}
+          </p>
+          <button onClick={() => setReplyTo(null)}>
+            <X size={14} />
+          </button>
+        </div>
+      )}
 
       {pendingImage && (
         <div className="flex items-center gap-2 border-t border-ivoire/10 px-3 pt-3">

@@ -23,6 +23,7 @@ export async function GET() {
   const messages = await prisma.supportMessage.findMany({
     orderBy: { createdAt: "asc" },
     take: 200,
+    include: { replyTo: { select: { id: true, authorName: true, content: true } } },
   });
 
   return NextResponse.json({ messages });
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Réservé aux membres Premium." }, { status: 403 });
   }
 
-  const { content, imageUrl } = await request.json();
+  const { content, imageUrl, replyToId } = await request.json();
   const trimmedContent = typeof content === "string" ? content.trim() : "";
 
   if (!trimmedContent && !imageUrl) {
@@ -62,6 +63,7 @@ export async function POST(request: Request) {
       senderRole,
       content: trimmedContent,
       imageUrl: imageUrl ?? null,
+      replyToId: typeof replyToId === "string" ? replyToId : null,
     },
   });
 
