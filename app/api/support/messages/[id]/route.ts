@@ -49,11 +49,11 @@ export async function DELETE(
     return NextResponse.json({ error: "Message introuvable." }, { status: 404 });
   }
 
-  // Members can delete their own messages; the admin can moderate anyone's
-  // (e.g. content that breaks the community rules).
+  // Members can delete their own messages; admins and moderators can
+  // moderate anyone's (e.g. content that breaks the community rules).
   const isOwn = message.authorId === session.user.id;
-  const isAdmin = session.user.role === "ADMIN";
-  if (!isOwn && !isAdmin) {
+  const canModerate = session.user.role === "ADMIN" || session.user.role === "MODERATOR";
+  if (!isOwn && !canModerate) {
     return NextResponse.json({ error: "Vous ne pouvez supprimer que vos propres messages." }, { status: 403 });
   }
 

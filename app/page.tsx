@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/marketing/navbar";
 import { Hero } from "@/components/marketing/hero";
+import { StatsBar } from "@/components/marketing/stats-bar";
 import { CategoryGrid } from "@/components/marketing/category-grid";
 import { PathsShowcase } from "@/components/marketing/paths-showcase";
 import { PricingSection } from "@/components/marketing/pricing-section";
@@ -15,6 +16,7 @@ export default async function LandingPage() {
       <IntroSplash />
       <Navbar />
       <Hero />
+      <StatsBar />
       <CategoryGrid />
       <PathsShowcase />
       <PricingSection premiumPriceXof={settings.premiumPriceXof} />

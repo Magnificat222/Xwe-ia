@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { generateQuizQuestions } from "@/lib/gemini";
+import { generateQuizQuestions, type QuizQuestionData } from "@/lib/gemini";
+
+function pickRandomQuestions(
+  pool: { question: string; options: string[]; correctIndex: number; explanation: string }[],
+  count: number
+): QuizQuestionData[] {
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
 
 export async function POST(
   request: Request,
@@ -44,7 +52,20 @@ export async function POST(
     }
   }
 
-  const questions = await generateQuizQuestions(stage.topic, stage.level, stage.questionCount);
+  let questions: QuizQuestionData[];
+
+  if (stage.questionSource === "MANUAL") {
+    const bank = await prisma.quizQuestion.findMany({ where: { stageId: stage.id } });
+    if (bank.length === 0) {
+      return NextResponse.json(
+        { error: "Cette étape n'a pas encore de questions. Contactez l'équipe Xwé IA." },
+        { status: 400 }
+      );
+    }
+    questions = pickRandomQuestions(bank, Math.min(stage.questionCount, bank.length));
+  } else {
+    questions = await generateQuizQuestions(stage.topic, stage.level, stage.questionCount);
+  }
 
   const attempt = await prisma.quizAttempt.create({
     data: {

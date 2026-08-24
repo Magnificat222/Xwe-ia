@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import type { QuizQuestionData } from "@/lib/gemini";
 import { POINTS_PER_CORRECT_ANSWER, calculateSpeedBonus, determineBadge } from "@/lib/quiz";
+import { notify } from "@/lib/notifications";
 
 export async function POST(
   request: Request,
@@ -92,6 +93,24 @@ export async function POST(
         where: { id: duel.id },
         data: { status: "COMPLETED", completedAt: new Date(), winnerId },
       });
+
+      const outcomeFor = (userId: string) =>
+        winnerId === null ? "Match nul" : winnerId === userId ? "Victoire" : "Défaite";
+
+      await Promise.all([
+        notify(
+          duel.challengerId,
+          "DUEL_RESULT",
+          `Votre duel est terminé — ${outcomeFor(duel.challengerId)}.`,
+          "/quiz/duels"
+        ),
+        notify(
+          duel.opponentId,
+          "DUEL_RESULT",
+          `Votre duel est terminé — ${outcomeFor(duel.opponentId)}.`,
+          "/quiz/duels"
+        ),
+      ]);
     }
   }
 

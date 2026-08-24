@@ -30,6 +30,7 @@ export interface QuizStageFormData {
   questionCount: number;
   order: number;
   isPremium: boolean;
+  questionSource: "AI" | "MANUAL";
 }
 
 export async function createQuizStage(data: QuizStageFormData) {

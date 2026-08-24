@@ -12,6 +12,7 @@ datasource db {
 
 enum Role {
   USER
+  MODERATOR
   ADMIN
 }
 
@@ -55,6 +56,7 @@ model User {
   quizAttempts     QuizAttempt[]
   duelsAsChallenger Duel[] @relation("DuelChallenger")
   duelsAsOpponent   Duel[] @relation("DuelOpponent")
+  notifications     Notification[]
 }
 
 // --- NextAuth / Auth.js required models ---
@@ -305,15 +307,40 @@ model QuizStage {
   slug          String       @unique
   title         String
   description   String       @db.Text
-  topic         String // seed fed to Gemini to keep generated questions on-theme
+  topic         String // seed fed to Gemini to keep generated questions on-theme (used when questionSource is AI)
   level         MissionLevel @default(DEBUTANT)
   order         Int          @default(0)
   questionCount Int          @default(10)
+  questionSource QuizQuestionSource @default(AI)
   isPremium     Boolean      @default(false)
   createdAt     DateTime     @default(now())
 
-  attempts QuizAttempt[]
-  duels    Duel[]
+  attempts        QuizAttempt[]
+  duels           Duel[]
+  manualQuestions QuizQuestion[]
+}
+
+enum QuizQuestionSource {
+  AI // generated fresh by Gemini every attempt, from `topic`
+  MANUAL // drawn at random from this stage's hand-written question bank
+}
+
+// A hand-written question for a stage using QuizQuestionSource.MANUAL. If a
+// stage has more questions in its bank than its questionCount, a fresh
+// random subset is drawn each attempt — so it still doesn't feel like the
+// same 10 questions every time, even without AI generation.
+model QuizQuestion {
+  id            String   @id @default(cuid())
+  stageId       String
+  question      String   @db.Text
+  options       String[] // exactly 4
+  correctIndex  Int // 0-3
+  explanation   String   @db.Text
+  createdAt     DateTime @default(now())
+
+  stage QuizStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+
+  @@index([stageId])
 }
 
 // One playthrough of a stage: a freshly-generated question set plus the
@@ -374,4 +401,24 @@ model Duel {
 model SiteSettings {
   id              String @id @default("singleton")
   premiumPriceXof Int    @default(3200)
+}
+
+enum NotificationType {
+  CHAT_REPLY
+  DUEL_CHALLENGE
+  DUEL_RESULT
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  message   String
+  link      String
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
 }

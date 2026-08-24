@@ -11,7 +11,7 @@ import { SignOutButton } from "@/components/shared/sign-out-button";
 export function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const isAdmin = session?.user?.role === "ADMIN";
+  const isAdmin = session?.user?.role === "ADMIN" || session?.user?.role === "MODERATOR";
 
   return (
     <aside className="hidden w-64 shrink-0 flex-col bg-noir md:flex">

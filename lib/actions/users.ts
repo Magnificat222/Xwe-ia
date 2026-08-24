@@ -17,3 +17,17 @@ export async function deleteUser(userId: string) {
 
   revalidatePath("/admin/users");
 }
+
+export async function setUserRole(userId: string, role: "USER" | "MODERATOR" | "ADMIN") {
+  const session = await auth();
+  if (session?.user?.role !== "ADMIN") {
+    throw new Error("Accès réservé aux administrateurs.");
+  }
+  if (session.user.id === userId) {
+    throw new Error("Vous ne pouvez pas changer votre propre rôle.");
+  }
+
+  await prisma.user.update({ where: { id: userId }, data: { role } });
+
+  revalidatePath("/admin/users");
+}

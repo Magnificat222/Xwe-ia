@@ -134,7 +134,7 @@ export function SupportChat() {
     if (res.ok) fetchMessages();
   };
 
-  const isAdmin = session?.user?.role === "ADMIN";
+  const canModerate = session?.user?.role === "ADMIN" || session?.user?.role === "MODERATOR";
 
   return (
     <div className="flex h-[65vh] flex-col rounded-card border border-ivoire/10 bg-noir-elevated">
@@ -149,7 +149,7 @@ export function SupportChat() {
         {messages.map((m) => {
           const isMine = m.authorId === session?.user?.id;
           const canModify = isMine && m.senderRole !== "AI";
-          const canDelete = isMine || isAdmin;
+          const canDelete = isMine || canModerate;
           const isEditing = editingId === m.id;
 
           return (

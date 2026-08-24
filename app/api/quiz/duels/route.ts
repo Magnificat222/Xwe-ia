@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { notify } from "@/lib/notifications";
 
 export async function GET() {
   const session = await auth();
@@ -58,6 +59,14 @@ export async function POST(request: Request) {
       status: "PENDING",
     },
   });
+
+  const challengerName = session.user.name ?? session.user.email ?? "Un membre";
+  await notify(
+    opponent.id,
+    "DUEL_CHALLENGE",
+    `${challengerName} vous défie sur « ${stage.title} ».`,
+    `/quiz/duels`
+  );
 
   return NextResponse.json({ duel });
 }

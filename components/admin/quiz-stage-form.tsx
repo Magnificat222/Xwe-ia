@@ -2,7 +2,9 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { List } from "lucide-react";
 import { createQuizStage, updateQuizStage, type QuizStageFormData } from "@/lib/actions/quiz-stages";
 
 export function QuizStageForm({
@@ -25,11 +27,23 @@ export function QuizStageForm({
   const [questionCount, setQuestionCount] = useState(initial?.questionCount ?? 10);
   const [order, setOrder] = useState(initial?.order ?? 1);
   const [isPremium, setIsPremium] = useState(initial?.isPremium ?? false);
+  const [questionSource, setQuestionSource] = useState<QuizStageFormData["questionSource"]>(
+    initial?.questionSource ?? "AI"
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    const data: QuizStageFormData = { title, description, topic, level, questionCount, order, isPremium };
+    const data: QuizStageFormData = {
+      title,
+      description,
+      topic,
+      level,
+      questionCount,
+      order,
+      isPremium,
+      questionSource,
+    };
 
     startTransition(async () => {
       try {
@@ -70,20 +84,61 @@ export function QuizStageForm({
 
       <div>
         <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-ivoire-dim">
-          Thème pour la génération IA
+          Source des questions
         </label>
-        <textarea
-          required
-          rows={2}
-          value={topic}
-          onChange={(e) => setTopic(e.target.value)}
-          placeholder="Ex : les bonnes pratiques de prompt engineering pour bien utiliser les IA génératives"
-          className="w-full rounded-lg border border-ivoire/15 bg-noir px-3 py-2 text-sm text-ivoire outline-none focus:border-or"
-        />
-        <p className="mt-1.5 text-xs text-ivoire-dim">
-          C'est ce texte qui guide Gemini pour générer les questions — soyez précis.
-        </p>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => setQuestionSource("AI")}
+            className={`flex-1 rounded-lg border px-4 py-3 text-left text-sm transition-colors ${
+              questionSource === "AI" ? "border-or bg-or/10 text-ivoire" : "border-ivoire/15 text-ivoire-dim"
+            }`}
+          >
+            <p className="font-medium">Générées par IA</p>
+            <p className="mt-0.5 text-xs opacity-80">Gemini invente des questions fraîches à chaque partie.</p>
+          </button>
+          <button
+            type="button"
+            onClick={() => setQuestionSource("MANUAL")}
+            className={`flex-1 rounded-lg border px-4 py-3 text-left text-sm transition-colors ${
+              questionSource === "MANUAL" ? "border-or bg-or/10 text-ivoire" : "border-ivoire/15 text-ivoire-dim"
+            }`}
+          >
+            <p className="font-medium">Écrites par moi</p>
+            <p className="mt-0.5 text-xs opacity-80">Un tirage aléatoire dans votre banque de questions.</p>
+          </button>
+        </div>
       </div>
+
+      {questionSource === "AI" ? (
+        <div>
+          <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-ivoire-dim">
+            Thème pour la génération IA
+          </label>
+          <textarea
+            required
+            rows={2}
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            placeholder="Ex : les bonnes pratiques de prompt engineering pour bien utiliser les IA génératives"
+            className="w-full rounded-lg border border-ivoire/15 bg-noir px-3 py-2 text-sm text-ivoire outline-none focus:border-or"
+          />
+        </div>
+      ) : (
+        stageId && (
+          <div className="rounded-lg border border-ivoire/15 p-4">
+            <p className="mb-2 text-sm text-ivoire">Banque de questions</p>
+            <p className="mb-3 text-xs text-ivoire-dim">
+              Enregistrez d'abord cette étape, puis gérez vos questions écrites à la main.
+            </p>
+            <Link href={`/admin/quiz/${stageId}/questions`}>
+              <Button type="button" size="sm" variant="secondary">
+                <List size={14} /> Gérer les questions
+              </Button>
+            </Link>
+          </div>
+        )
+      )}
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div>
@@ -100,7 +155,7 @@ export function QuizStageForm({
         </div>
         <div>
           <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-ivoire-dim">
-            Nombre de questions
+            Questions par partie
           </label>
           <input
             type="number"

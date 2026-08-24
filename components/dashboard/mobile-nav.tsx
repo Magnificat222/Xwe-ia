@@ -10,7 +10,7 @@ import { SignOutButton } from "@/components/shared/sign-out-button";
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
-  const isAdmin = session?.user?.role === "ADMIN";
+  const isAdmin = session?.user?.role === "ADMIN" || session?.user?.role === "MODERATOR";
 
   return (
     <div className="md:hidden">

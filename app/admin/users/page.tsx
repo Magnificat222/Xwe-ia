@@ -1,10 +1,14 @@
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
 import { DeleteUserButton } from "@/components/admin/delete-user-button";
+import { RoleSelect } from "@/components/admin/role-select";
 
 export default async function AdminUsersPage() {
   const session = await auth();
+  if (session?.user?.role !== "ADMIN") redirect("/admin/support");
+
   const users = await prisma.user.findMany({
     include: { subscription: true },
     orderBy: { createdAt: "desc" },
@@ -44,7 +48,11 @@ export default async function AdminUsersPage() {
                   )}
                 </td>
                 <td className="px-4 py-3">
-                  {user.role === "ADMIN" ? <Badge tone="feuillage">Admin</Badge> : <Badge>Utilisateur</Badge>}
+                  {user.id === session?.user?.id ? (
+                    <Badge tone="feuillage">Admin (vous)</Badge>
+                  ) : (
+                    <RoleSelect userId={user.id} currentRole={user.role} />
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   {user.id !== session?.user?.id && (

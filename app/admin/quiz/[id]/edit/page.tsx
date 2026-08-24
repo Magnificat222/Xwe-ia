@@ -30,6 +30,7 @@ export default async function EditQuizStagePage({
           questionCount: stage.questionCount,
           order: stage.order,
           isPremium: stage.isPremium,
+          questionSource: stage.questionSource,
         }}
       />
     </div>

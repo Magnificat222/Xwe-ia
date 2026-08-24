@@ -2,6 +2,7 @@ import { Sidebar } from "@/components/dashboard/sidebar";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { GlobalSearch } from "@/components/shared/global-search";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
+import { NotificationBell } from "@/components/dashboard/notification-bell";
 
 export default function DashboardLayout({
   children,
@@ -16,6 +17,7 @@ export default function DashboardLayout({
           <MobileNav />
           <div className="flex items-center gap-3">
             <ThemeToggle />
+            <NotificationBell />
             <GlobalSearch />
           </div>
         </header>
