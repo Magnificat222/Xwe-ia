@@ -183,7 +183,7 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
     }
 
     await signIn("credentials", { email: data.email, password: data.password, redirect: false });
-    router.push("/dashboard");
+    router.push("/onboarding");
   };
 
   return (

@@ -13,9 +13,15 @@ import { AvatarForm } from "@/components/settings/avatar-form";
 import { DashboardLayoutForm } from "@/components/settings/dashboard-layout-form";
 import { parseDashboardPrefs } from "@/lib/dashboard-prefs";
 
-export default async function ProfilePage() {
+export default async function ProfilePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ verify?: string }>;
+}) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login?callbackUrl=/profile");
+
+  const { verify } = await searchParams;
 
   const [user, subscription] = await Promise.all([
     prisma.user.findUnique({ where: { id: session.user.id } }),
@@ -31,6 +37,17 @@ export default async function ProfilePage() {
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-or">Paramètres</p>
         <h1 className="mt-2 font-display text-3xl text-ivoire">Mon compte</h1>
       </div>
+
+      {verify === "success" && (
+        <div className="rounded-lg border border-feuillage/30 bg-feuillage-soft/20 px-4 py-3 text-sm text-ivoire">
+          E-mail confirmé — merci !
+        </div>
+      )}
+      {verify === "expired" && (
+        <div className="rounded-lg border border-or/25 bg-or/5 px-4 py-3 text-sm text-ivoire">
+          Ce lien a expiré. Utilisez le bouton ci-dessous pour en recevoir un nouveau.
+        </div>
+      )}
 
       <Card>
         <div className="mb-4 flex items-center justify-between">

@@ -8,6 +8,7 @@ import { CategoryDonut } from "@/components/dashboard/category-donut";
 import { Clock, Target, Trophy, Medal, ArrowRight } from "lucide-react";
 import { formatMinutes } from "@/lib/utils";
 import { parseDashboardPrefs } from "@/lib/dashboard-prefs";
+import { EmailVerificationBanner } from "@/components/shared/email-verification-banner";
 
 const CHART_COLORS = ["#c9531f", "#c9a24b", "#3a7a52", "#8a7c68"];
 
@@ -69,6 +70,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-8 pt-2">
+      <EmailVerificationBanner />
       <div
         className="relative overflow-hidden rounded-2xl p-8 md:p-10"
         style={{ background: "linear-gradient(135deg, #c9531f 0%, #1e4530 100%)" }}

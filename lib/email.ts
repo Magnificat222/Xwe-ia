@@ -24,3 +24,23 @@ export async function sendPasswordResetEmail(email: string, resetUrl: string) {
     `,
   });
 }
+
+export async function sendVerificationEmail(email: string, verifyUrl: string) {
+  await resend.emails.send({
+    from: "Xwé IA <onboarding@resend.dev>",
+    to: email,
+    subject: "Confirmez votre adresse e-mail — Xwé IA",
+    html: `
+      <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
+        <h2>Bienvenue sur Xwé IA</h2>
+        <p>Confirmez votre adresse e-mail pour activer pleinement votre compte.</p>
+        <p>
+          <a href="${verifyUrl}" style="display:inline-block;padding:10px 20px;background:#000;color:#fff;text-decoration:none;border-radius:6px;">
+            Confirmer mon e-mail
+          </a>
+        </p>
+        <p>Ce lien expire dans 24 heures.</p>
+      </div>
+    `,
+  });
+}
