@@ -142,8 +142,8 @@ export function SupportChat() {
         {messages.length === 0 && (
           <p className="text-center text-sm text-ivoire-dim">
             Le salon Premium est calme pour l'instant — posez une question,
-            l'assistant IA répond immédiatement et l'équipe Xwé IA peut
-            intervenir à tout moment.
+            l'équipe Xwé IA et les autres membres peuvent intervenir à tout
+            moment.
           </p>
         )}
         {messages.map((m) => {

@@ -2,13 +2,13 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-export type FontPreference = "inter" | "atkinson" | "lora";
+export type FontPreference = "inter" | "atkinson" | "bricolage";
 
 const STORAGE_KEY = "xwe-ia-font-pref";
 const CLASS_BY_FONT: Record<FontPreference, string | null> = {
   inter: null,
   atkinson: "font-pref-atkinson",
-  lora: "font-pref-lora",
+  bricolage: "font-pref-bricolage",
 };
 
 const FontPrefContext = createContext<{

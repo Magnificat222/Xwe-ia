@@ -1,10 +1,16 @@
-import { Check, Star } from "lucide-react";
+import { Check, Star, Mail } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { KkiapayCheckoutButton } from "@/components/marketing/kkiapay-checkout-button";
 
-export function PricingSection({ premiumPriceXof }: { premiumPriceXof: number }) {
+export function PricingSection({
+  premiumPriceXof,
+  selfServeEnabled,
+}: {
+  premiumPriceXof: number;
+  selfServeEnabled: boolean;
+}) {
   const plans = [
     {
       name: "Gratuit",
@@ -28,7 +34,7 @@ export function PricingSection({ premiumPriceXof }: { premiumPriceXof: number })
         "Bibliothèque de prompts complète",
         "Tous les outils IA recommandés",
         "Ebooks téléchargeables",
-        "Salon Premium avec l'IA et l'équipe Xwé IA",
+        "Salon Premium avec l'équipe Xwé IA",
         "Badges et statistiques avancées",
       ],
       cta: "Passer Premium",
@@ -68,9 +74,22 @@ export function PricingSection({ premiumPriceXof }: { premiumPriceXof: number })
               ))}
             </ul>
             {plan.highlighted ? (
-              <div className="mt-6">
-                <KkiapayCheckoutButton amountXof={premiumPriceXof} />
-              </div>
+              selfServeEnabled ? (
+                <div className="mt-6">
+                  <KkiapayCheckoutButton amountXof={premiumPriceXof} />
+                </div>
+              ) : (
+                <div className="mt-6">
+                  <Link href="/contact">
+                    <Button className="w-full">
+                      <Mail size={15} /> Demander un accès Premium
+                    </Button>
+                  </Link>
+                  <p className="mt-2 text-xs text-ivoire-dim">
+                    Accès sur invitation pour le moment, le temps d'une phase de test.
+                  </p>
+                </div>
+              )
             ) : (
               <Link href="/register" className="mt-6 block">
                 <Button variant="secondary" className="w-full">

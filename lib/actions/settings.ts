@@ -11,7 +11,7 @@ async function requireAdmin() {
   }
 }
 
-export async function updateSiteSettings(data: { premiumPriceXof: number }) {
+export async function updateSiteSettings(data: { premiumPriceXof: number; selfServePremiumEnabled: boolean }) {
   await requireAdmin();
 
   await prisma.siteSettings.upsert({

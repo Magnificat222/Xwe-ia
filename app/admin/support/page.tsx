@@ -5,8 +5,8 @@ export default function AdminSupportPage() {
     <div className="mx-auto max-w-2xl">
       <h1 className="mb-6 font-display text-2xl text-ivoire">Salon Premium</h1>
       <p className="mb-4 text-sm text-ivoire-dim">
-        Tous les membres Premium partagent ce salon. L'assistant IA répond en
-        premier ; interviens quand une réponse mérite ta touche personnelle.
+        Tous les membres Premium partagent ce salon. Interviens dès qu'une
+        question mérite une réponse.
       </p>
       <SupportChat />
     </div>

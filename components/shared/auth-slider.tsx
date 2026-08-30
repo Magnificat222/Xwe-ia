@@ -243,7 +243,7 @@ function OverlayPanel({ mode, onSwitch }: { mode: Mode; onSwitch: () => void }) 
           L&apos;IA orientée objectifs
         </p>
         <h2 className="font-display text-3xl leading-tight">
-          Transformez vos objectifs en <span className="italic">résultats</span>
+          Transformez vos objectifs en <span className="text-or">résultats</span>
         </h2>
 
         <div className="mt-8 space-y-3">

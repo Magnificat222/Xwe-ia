@@ -31,3 +31,18 @@ export async function setUserRole(userId: string, role: "USER" | "MODERATOR" | "
 
   revalidatePath("/admin/users");
 }
+
+export async function setUserPlan(userId: string, plan: "FREE" | "PREMIUM") {
+  const session = await auth();
+  if (session?.user?.role !== "ADMIN") {
+    throw new Error("Accès réservé aux administrateurs.");
+  }
+
+  await prisma.subscription.upsert({
+    where: { userId },
+    update: { plan, status: "ACTIVE" },
+    create: { userId, plan, status: "ACTIVE" },
+  });
+
+  revalidatePath("/admin/users");
+}

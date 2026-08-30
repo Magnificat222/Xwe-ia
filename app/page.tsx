@@ -19,7 +19,7 @@ export default async function LandingPage() {
       <StatsBar />
       <CategoryGrid />
       <PathsShowcase />
-      <PricingSection premiumPriceXof={settings.premiumPriceXof} />
+      <PricingSection premiumPriceXof={settings.premiumPriceXof} selfServeEnabled={settings.selfServePremiumEnabled} />
       <Footer />
     </main>
   );

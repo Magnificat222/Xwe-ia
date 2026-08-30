@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
 import { DeleteUserButton } from "@/components/admin/delete-user-button";
 import { RoleSelect } from "@/components/admin/role-select";
+import { PlanSelect } from "@/components/admin/plan-select";
 
 export default async function AdminUsersPage() {
   const session = await auth();
@@ -41,11 +42,7 @@ export default async function AdminUsersPage() {
                 <td className="px-4 py-3">{user.name ?? "—"}</td>
                 <td className="px-4 py-3 text-ivoire-dim">{user.email}</td>
                 <td className="px-4 py-3">
-                  {user.subscription?.plan === "PREMIUM" ? (
-                    <Badge tone="gold">Premium</Badge>
-                  ) : (
-                    <Badge>Gratuit</Badge>
-                  )}
+                  <PlanSelect userId={user.id} currentPlan={user.subscription?.plan ?? "FREE"} />
                 </td>
                 <td className="px-4 py-3">
                   {user.id === session?.user?.id ? (

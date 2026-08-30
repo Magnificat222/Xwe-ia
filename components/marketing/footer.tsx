@@ -4,6 +4,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-sm text-ivoire-dim md:flex-row">
         <p>© {new Date().getFullYear()} Xwé IA. Tous droits réservés.</p>
         <div className="flex gap-6">
+          <a href="/a-propos" className="hover:text-ivoire">À propos</a>
           <a href="/confidentialite" className="hover:text-ivoire">Confidentialité</a>
           <a href="/conditions" className="hover:text-ivoire">Conditions</a>
           <a href="/contact" className="hover:text-ivoire">Contact</a>

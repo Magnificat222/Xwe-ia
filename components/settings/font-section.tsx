@@ -5,7 +5,7 @@ import { useFontPref, type FontPreference } from "@/components/shared/font-pref-
 const OPTIONS: { value: FontPreference; label: string; description: string; sample: string }[] = [
   { value: "inter", label: "Épurée", description: "Inter — la police par défaut, nette et moderne.", sample: "font-sans" },
   { value: "atkinson", label: "Accessible", description: "Atkinson Hyperlegible — conçue pour une lecture facile.", sample: "" },
-  { value: "lora", label: "Chaleureuse", description: "Lora — une lecture plus littéraire, à l'esprit éditorial.", sample: "" },
+  { value: "bricolage", label: "Expressive", description: "Bricolage Grotesque — un style contemporain, moins classique.", sample: "" },
 ];
 
 export function FontSection() {

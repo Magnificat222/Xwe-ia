@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, IBM_Plex_Mono, Atkinson_Hyperlegible, Lora } from "next/font/google";
+import { Unbounded, Inter, IBM_Plex_Mono, Atkinson_Hyperlegible, Bricolage_Grotesque } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
-const fraunces = Fraunces({
+// Display face: bold, geometric, contemporary — deliberately NOT a serif.
+// A serif headline reads as "classic/literary"; Unbounded reads as current
+// and confident instead, closer to the energy of African tech branding
+// than an editorial magazine.
+const unbounded = Unbounded({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
+  weight: ["500", "600", "700", "800"],
 });
 
 const inter = Inter({
@@ -16,7 +19,7 @@ const inter = Inter({
 });
 
 // Alternate reading fonts, offered as a personal preference in Settings.
-// Both loaded upfront (bound to their own CSS variables) so switching is an
+// All loaded upfront (bound to their own CSS variables) so switching is an
 // instant class toggle with no extra network request or layout flash.
 const atkinson = Atkinson_Hyperlegible({
   subsets: ["latin"],
@@ -24,9 +27,9 @@ const atkinson = Atkinson_Hyperlegible({
   variable: "--font-body-atkinson",
 });
 
-const lora = Lora({
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  variable: "--font-body-lora",
+  variable: "--font-body-bricolage",
 });
 
 const plexMono = IBM_Plex_Mono({
@@ -47,7 +50,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${fraunces.variable} ${inter.variable} ${atkinson.variable} ${lora.variable} ${plexMono.variable}`}
+      className={`${unbounded.variable} ${inter.variable} ${atkinson.variable} ${bricolage.variable} ${plexMono.variable}`}
     >
       <body>
         <Providers>{children}</Providers>

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { generateAIReply } from "@/lib/gemini";
 import { notify } from "@/lib/notifications";
 
 async function isAllowed(userId: string, role: string) {
@@ -78,23 +77,6 @@ export async function POST(request: Request) {
         `${authorName} a répondu à votre message dans le Salon Premium.`,
         "/support"
       );
-    }
-  }
-
-  // Only auto-reply to regular members with actual text, not to the admin's
-  // own messages, and not to image-only posts (Gemini here is text-only —
-  // replying to a picture it can't see would just be a confusing guess).
-  if (senderRole === "USER" && trimmedContent) {
-    const aiText = await generateAIReply(trimmedContent);
-    if (aiText) {
-      await prisma.supportMessage.create({
-        data: {
-          authorId: null,
-          authorName: "Assistant IA",
-          senderRole: "AI",
-          content: aiText,
-        },
-      });
     }
   }
 

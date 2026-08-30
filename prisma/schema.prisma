@@ -399,8 +399,12 @@ model Duel {
 // Singleton row (id is always "singleton") holding site-wide settings the
 // admin can adjust without touching code — e.g. the Premium price.
 model SiteSettings {
-  id              String @id @default("singleton")
-  premiumPriceXof Int    @default(3200)
+  id                     String  @id @default("singleton")
+  premiumPriceXof        Int     @default(3200)
+  // While false, the public KKiaPay checkout is hidden and Premium access
+  // is granted manually by an admin (Admin → Utilisateurs) — useful for a
+  // controlled beta before opening self-serve payment to everyone.
+  selfServePremiumEnabled Boolean @default(true)
 }
 
 enum NotificationType {

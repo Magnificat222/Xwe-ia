@@ -64,8 +64,8 @@ body {
 .font-pref-atkinson {
   --font-body: var(--font-body-atkinson);
 }
-.font-pref-lora {
-  --font-body: var(--font-body-lora);
+.font-pref-bricolage {
+  --font-body: var(--font-body-bricolage);
 }
 
 /* Signature element: the "liseré" — a thin repeating triangle band lifted

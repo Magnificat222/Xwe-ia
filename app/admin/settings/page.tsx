@@ -7,7 +7,7 @@ export default async function AdminSettingsPage() {
   return (
     <div>
       <h1 className="mb-6 font-display text-2xl text-ivoire">Réglages</h1>
-      <SettingsForm initialPrice={settings.premiumPriceXof} />
+      <SettingsForm initialPrice={settings.premiumPriceXof} initialSelfServe={settings.selfServePremiumEnabled} />
     </div>
   );
 }

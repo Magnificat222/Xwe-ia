@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 
-const DEFAULTS = { id: "singleton", premiumPriceXof: 3200 };
+const DEFAULTS = { id: "singleton", premiumPriceXof: 3200, selfServePremiumEnabled: true };
 
 // Reads the singleton settings row, creating it with defaults on first use
 // so the site never needs a manual seed step just for this.
