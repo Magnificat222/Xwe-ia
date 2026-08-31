@@ -9,6 +9,7 @@ import { Clock, Target, Trophy, Medal, ArrowRight } from "lucide-react";
 import { formatMinutes } from "@/lib/utils";
 import { parseDashboardPrefs } from "@/lib/dashboard-prefs";
 import { EmailVerificationBanner } from "@/components/shared/email-verification-banner";
+import { MyProjects } from "@/components/dashboard/my-projects";
 
 const CHART_COLORS = ["#c9531f", "#c9a24b", "#3a7a52", "#8a7c68"];
 
@@ -103,6 +104,8 @@ export default async function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      <MyProjects userId={userId} />
 
       {prefs.showStats && (
       <div className="grid gap-4 sm:grid-cols-3">

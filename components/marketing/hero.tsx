@@ -26,16 +26,20 @@ export function Hero() {
             Vous avez besoin d'arriver <span className="text-or">au résultat</span>.
           </h1>
           <p className="mt-6 max-w-md text-base leading-relaxed text-ivoire-dim">
-            Xwé IA transforme un objectif — business plan, lancement
-            d'entreprise, soutenance, personal branding — en missions guidées,
-            avec les prompts et les outils IA qu'il faut à chaque étape.
+            Pas besoin de savoir écrire le prompt parfait. Choisissez ce que
+            vous voulez accomplir, répondez à quelques questions et avancez
+            étape par étape avec l'IA comme accompagnement — pas comme une
+            IA de plus à apprivoiser.
+          </p>
+          <p className="mt-4 font-display text-lg text-or">
+            ChatGPT te donne une réponse. Xwé IA t'aide à avancer.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link href="/register">
-              <Button size="lg">Choisir mon objectif</Button>
+              <Button size="lg">Commencer un projet</Button>
             </Link>
             <a href="#missions">
-              <Button size="lg" variant="secondary">Voir les missions</Button>
+              <Button size="lg" variant="secondary">Découvrir les missions</Button>
             </a>
           </div>
         </div>
