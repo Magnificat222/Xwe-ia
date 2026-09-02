@@ -57,6 +57,7 @@ model User {
   duelsAsChallenger Duel[] @relation("DuelChallenger")
   duelsAsOpponent   Duel[] @relation("DuelOpponent")
   notifications     Notification[]
+  guidedProjects    GuidedProject[]
 }
 
 // --- NextAuth / Auth.js required models ---
@@ -425,4 +426,24 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, read])
+}
+
+// A guided, multi-step project wizard (e.g. "business-plan"). `wizardType`
+// keys into a config defined in code (lib/wizards/*) — the steps and fields
+// themselves aren't in the DB, only each user's own answers are. No AI is
+// involved: the final document assembles the user's own words, formatted.
+model GuidedProject {
+  id          String    @id @default(cuid())
+  userId      String
+  wizardType  String
+  title       String?
+  answers     Json      @default("{}")
+  currentStep Int       @default(0)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
