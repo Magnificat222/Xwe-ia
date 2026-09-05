@@ -21,6 +21,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             {isAdmin && (
               <>
                 <Link href="/admin/missions" className="hover:text-ivoire">Missions</Link>
+                <Link href="/admin/parcours" className="hover:text-ivoire">Parcours</Link>
                 <Link href="/admin/prompts" className="hover:text-ivoire">Prompts</Link>
                 <Link href="/admin/ebooks" className="hover:text-ivoire">Ebooks</Link>
                 <Link href="/admin/quiz" className="hover:text-ivoire">Quiz</Link>

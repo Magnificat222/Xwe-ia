@@ -3,48 +3,60 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Target, Milestone, FlagTriangleRight } from "lucide-react";
+import { Target, Milestone, FlagTriangleRight, ArrowRight } from "lucide-react";
 
 const trajectoire = [
-  { icon: Target, label: "Objectif", detail: "Vous choisissez un résultat concret" },
-  { icon: Milestone, label: "Missions guidées", detail: "L'IA vous accompagne étape par étape" },
-  { icon: FlagTriangleRight, label: "Résultat", detail: "Un livrable réel, prêt à l'emploi" },
+  { icon: Target, label: "Objectif", detail: "Tu choisis ce que tu veux accomplir" },
+  { icon: Milestone, label: "Parcours guidé", detail: "Tu avances étape par étape avec soutien" },
+  { icon: FlagTriangleRight, label: "Résultat", detail: "Tu obtiens un livrable concret et utilisable" },
+];
+
+const goalExamples = [
+  "Créer mon business",
+  "Réussir mon projet académique",
+  "Développer mon activité sur les réseaux sociaux",
+  "Apprendre à utiliser l’IA",
 ];
 
 export function Hero() {
   return (
     <section className="relative overflow-hidden px-6 pb-24 pt-20 md:pt-28">
-      <div className="mx-auto grid max-w-6xl gap-16 md:grid-cols-2 md:items-center">
+      <div className="mx-auto grid max-w-6xl gap-16 md:grid-cols-[1.1fr_0.9fr] md:items-center">
         <div>
           <p className="mb-4 font-mono text-xs uppercase tracking-[0.2em] text-or">
-            L'IA orientée objectifs
+            Xwé IA transforme tes idées en résultats concrets
           </p>
           <h1 className="font-display text-4xl leading-[1.1] text-ivoire md:text-5xl">
-            Vous n'avez pas besoin d'un{" "}
-            <em className="text-ivoire-dim not-italic">autre chatbot</em>.
-            <br />
-            Vous avez besoin d'arriver <span className="text-or">au résultat</span>.
+            Quel est ton <span className="text-or">objectif</span> ?
           </h1>
-          <p className="mt-6 max-w-md text-base leading-relaxed text-ivoire-dim">
-            Pas besoin de savoir écrire le prompt parfait. Choisissez ce que
-            vous voulez accomplir, répondez à quelques questions et avancez
-            étape par étape avec l'IA comme accompagnement — pas comme une
-            IA de plus à apprivoiser.
+          <p className="mt-6 max-w-lg text-base leading-relaxed text-ivoire-dim">
+            Tu n’as pas besoin d’un autre chatbot. Tu as besoin d’un accompagnement
+            qui te mène d’une idée à un résultat exploitable, étape par étape.
           </p>
-          <p className="mt-4 font-display text-lg text-or">
-            ChatGPT te donne une réponse. Xwé IA t'aide à avancer.
-          </p>
+
+          <div className="mt-7 flex flex-wrap gap-2">
+            {goalExamples.map((goal) => (
+              <span
+                key={goal}
+                className="rounded-full border border-or/25 bg-or/5 px-3 py-1.5 text-sm text-ivoire"
+              >
+                {goal}
+              </span>
+            ))}
+          </div>
+
           <div className="mt-8 flex flex-wrap gap-4">
             <Link href="/register">
-              <Button size="lg">Commencer un projet</Button>
+              <Button size="lg">Commencer un objectif</Button>
             </Link>
             <a href="#missions">
-              <Button size="lg" variant="secondary">Découvrir les missions</Button>
+              <Button size="lg" variant="secondary">
+                Voir les parcours <ArrowRight size={16} />
+              </Button>
             </a>
           </div>
         </div>
 
-        {/* Signature element: la trajectoire */}
         <div className="relative pl-4">
           <div className="trajectoire-line absolute left-[27px] top-4 h-[calc(100%-2rem)] w-px" />
           <ul className="space-y-10">

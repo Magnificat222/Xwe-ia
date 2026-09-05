@@ -7,10 +7,10 @@ import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { LayoutDashboard } from "lucide-react";
 
 const links = [
-  { href: "#missions", label: "Missions" },
+  { href: "#missions", label: "Objectifs" },
   { href: "#parcours", label: "Parcours" },
   { href: "#outils", label: "Outils IA" },
-  { href: "#tarifs", label: "Tarifs" },
+  { href: "#tarifs", label: "Prix" },
 ];
 
 export function Navbar() {

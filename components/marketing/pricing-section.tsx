@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { KkiapayCheckoutButton } from "@/components/marketing/kkiapay-checkout-button";
+import { DEFAULT_PATH_OFFERS } from "@/lib/access";
 
 export function PricingSection({
   premiumPriceXof,
@@ -15,56 +16,69 @@ export function PricingSection({
     {
       name: "Gratuit",
       price: "0",
-      description: "Pour découvrir la méthode et démarrer vos premières missions.",
+      subtitle: "Découvre Xwé IA sans frais",
+      description: "Pour tester l’approche, participer à la communauté et utiliser les outils de base.",
       features: [
-        "Accès aux missions gratuites",
-        "Bibliothèque de prompts (sélection)",
-        "Suivi de progression",
-        "1 parcours gratuit",
+        "Discussion communautaire",
+        "Arène de jeux et défis",
+        "Outils IA gratuits",
+        "Quelques parcours de découverte",
       ],
       cta: "Commencer gratuitement",
       highlighted: false,
     },
     {
+      name: "À l’objectif",
+      price: "500 à 2 500",
+      subtitle: "Un achat unique pour un résultat précis",
+      description: "Tu achètes le parcours qui correspond à ce que tu veux accomplir et tu débloques tout le suivi associé.",
+      features: DEFAULT_PATH_OFFERS.map((offer) => `${offer.title} — ${offer.priceXof.toLocaleString("fr-FR")} FCFA`),
+      cta: "Choisir un parcours",
+      highlighted: true,
+    },
+    {
       name: "Premium",
-      price: premiumPriceXof.toString(),
-      description: "Pour aller jusqu'au résultat, sur tous vos objectifs.",
+      price: `${premiumPriceXof.toLocaleString("fr-FR")}`,
+      subtitle: "5 500 FCFA / mois",
+      description: "Pour les utilisateurs réguliers qui veulent accéder à davantage de parcours et de ressources avancées.",
       features: [
-        "Toutes les missions et parcours débloqués",
-        "Bibliothèque de prompts complète",
-        "Tous les outils IA recommandés",
-        "Ebooks téléchargeables",
-        "Salon Premium avec l'équipe Xwé IA",
-        "Badges et statistiques avancées",
+        "Accès aux parcours Premium",
+        "Accès élargi aux ressources",
+        "Suivi avancé et historique",
+        "Business Plan et documents premium",
       ],
       cta: "Passer Premium",
-      highlighted: true,
+      highlighted: false,
     },
   ];
 
   return (
     <section id="tarifs" className="mx-auto max-w-6xl px-6 py-20">
       <div className="mb-10 max-w-lg">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-or">Tarifs</p>
-        <h2 className="mt-3 font-display text-3xl text-ivoire">Simple, sans surprise</h2>
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-or">Modèle de prix</p>
+        <h2 className="mt-3 font-display text-3xl text-ivoire">Simple, clair et orienté résultat</h2>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-3">
         {plans.map((plan) => (
           <Card
             key={plan.name}
-            className={plan.highlighted ? "border-or/50 bg-braise/10" : undefined}
+            className={plan.name === "À l’objectif" ? "border-or/50 bg-braise/10" : undefined}
           >
-            <div className="flex items-baseline justify-between">
+            <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <h3 className="font-display text-xl text-ivoire">{plan.name}</h3>
-                {plan.highlighted && <Star size={16} className="fill-or text-or" />}
+                {plan.name === "Premium" && <Star size={16} className="fill-or text-or" />}
               </div>
               <p className="font-display text-2xl text-or">
-                {plan.price} FCFA<span className="text-sm text-ivoire-dim"> /mois</span>
+                {plan.price}
+                {plan.name !== "Gratuit" && plan.name !== "À l’objectif" ? (
+                  <span className="text-sm text-ivoire-dim"> FCFA</span>
+                ) : null}
               </p>
             </div>
-            <p className="mt-2 text-sm text-ivoire-dim">{plan.description}</p>
+            <p className="mt-2 text-xs uppercase tracking-[0.2em] text-or">{plan.subtitle}</p>
+            <p className="mt-3 text-sm text-ivoire-dim">{plan.description}</p>
             <ul className="mt-5 space-y-2.5">
               {plan.features.map((feature) => (
                 <li key={feature} className="flex items-start gap-2 text-sm text-ivoire">
@@ -73,7 +87,7 @@ export function PricingSection({
                 </li>
               ))}
             </ul>
-            {plan.highlighted ? (
+            {plan.name === "Premium" ? (
               selfServeEnabled ? (
                 <div className="mt-6">
                   <KkiapayCheckoutButton amountXof={premiumPriceXof} />
@@ -92,7 +106,7 @@ export function PricingSection({
               )
             ) : (
               <Link href="/register" className="mt-6 block">
-                <Button variant="secondary" className="w-full">
+                <Button variant={plan.name === "Gratuit" ? "secondary" : "primary"} className="w-full">
                   {plan.cta}
                 </Button>
               </Link>

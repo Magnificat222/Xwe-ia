@@ -50,6 +50,7 @@ model User {
   progress      Progress[]
   history       History[]
   subscription  Subscription?
+  pathAccesses  LearningPathAccess[]
   accounts      Account[]
   sessions      Session[]
   supportMessages SupportMessage[]
@@ -58,6 +59,8 @@ model User {
   duelsAsOpponent   Duel[] @relation("DuelOpponent")
   notifications     Notification[]
   guidedProjects    GuidedProject[]
+  pathPurchases     LearningPathPurchase[]
+  pathProgresses    PathProgress[]
 }
 
 // --- NextAuth / Auth.js required models ---
@@ -133,16 +136,28 @@ model Mission {
 }
 
 model LearningPath {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  title       String
-  description String   @db.Text
-  isPremium   Boolean  @default(false)
-  isPublished Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  id                 String       @id @default(cuid())
+  slug               String       @unique
+  title              String
+  description        String       @db.Text
+  icon               String?      // emoji ou identifiant d'icône Lucide (ex: "🚀", "Target")
+  category           String?      // clé de filtrage : "business" | "academique" | "reseaux" | "ia" | "autre"
+  targetAudience     String[]     // ex: ["Entrepreneurs", "Étudiants", "Créateurs"]
+  difficulty         MissionLevel @default(DEBUTANT)
+  estimatedHours     Int?         // durée totale estimée en heures
+  resultTitle        String?      // titre court du livrable final
+  resultDescription  String?      @db.Text // description détaillée du livrable
+  priceXof           Int          @default(0)
+  isPremium          Boolean      @default(false)
+  isPublished        Boolean      @default(false)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
 
-  missions  LearningPathMission[]
-  favorites Favorite[]
+  missions       LearningPathMission[]
+  favorites      Favorite[]
+  accesses       LearningPathAccess[]
+  purchases      LearningPathPurchase[]
+  pathProgresses PathProgress[]
 }
 
 // Explicit join table so missions can be ordered within a path
@@ -225,6 +240,24 @@ model History {
   mission Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
 }
 
+// Progression agrégée d'un utilisateur dans un parcours complet.
+// Créée dès qu'un utilisateur débute un parcours (première mission vue),
+// mise à jour à chaque mission complétée dans ce parcours.
+model PathProgress {
+  id             String    @id @default(cuid())
+  userId         String
+  learningPathId String
+  startedAt      DateTime  @default(now())
+  lastActivityAt DateTime  @default(now())
+  completedAt    DateTime?
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  learningPath LearningPath @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, learningPathId])
+  @@index([userId])
+}
+
 model Subscription {
   id                   String             @id @default(cuid())
   userId               String             @unique
@@ -237,6 +270,64 @@ model Subscription {
   updatedAt            DateTime           @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum PurchaseSource {
+  KKIAPAY
+  MANUAL
+  PREMIUM
+}
+
+enum AccessStatus {
+  ACTIVE
+  EXPIRED
+  CANCELED
+}
+
+enum PurchaseStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+model LearningPathPurchase {
+  id             String         @id @default(cuid())
+  userId         String
+  learningPathId String
+  source         PurchaseSource @default(KKIAPAY)
+  status         PurchaseStatus  @default(PENDING)
+  amountXof      Int
+  transactionId  String?        @unique
+  purchasedAt    DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  learningPath LearningPath @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([learningPathId, status])
+}
+
+model LearningPathAccess {
+  id             String        @id @default(cuid())
+  userId         String
+  learningPathId String
+  source         PurchaseSource @default(KKIAPAY)
+  status         AccessStatus   @default(ACTIVE)
+  priceXof       Int
+  purchasedAt    DateTime      @default(now())
+  expiresAt      DateTime?
+  transactionId  String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  learningPath LearningPath @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, learningPathId])
+  @@index([userId, status])
 }
 
 // Shared group chat for all Premium members ("Salon Premium"). Every
@@ -401,7 +492,7 @@ model Duel {
 // admin can adjust without touching code — e.g. the Premium price.
 model SiteSettings {
   id                     String  @id @default("singleton")
-  premiumPriceXof        Int     @default(3200)
+  premiumPriceXof        Int     @default(5500)
   // While false, the public KKiaPay checkout is hidden and Premium access
   // is granted manually by an admin (Admin → Utilisateurs) — useful for a
   // controlled beta before opening self-serve payment to everyone.

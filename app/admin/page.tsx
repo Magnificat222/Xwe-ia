@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Card } from "@/components/ui/card";
-import { Target, Library, BookOpen, Swords, Users, MessageCircleHeart, Settings } from "lucide-react";
+import { Target, Route, Library, BookOpen, Swords, Users, MessageCircleHeart, Settings } from "lucide-react";
 
 export default async function AdminHomePage() {
-  const [missionCount, promptCount, ebookCount, stageCount, userCount] = await Promise.all([
+  const [missionCount, pathCount, promptCount, ebookCount, stageCount, userCount] = await Promise.all([
     prisma.mission.count(),
+    prisma.learningPath.count(),
     prisma.prompt.count(),
     prisma.ebook.count(),
     prisma.quizStage.count(),
@@ -14,11 +15,12 @@ export default async function AdminHomePage() {
 
   const sections = [
     { href: "/admin/missions", label: "Missions", count: missionCount, icon: Target },
+    { href: "/admin/parcours", label: "Parcours", count: pathCount, icon: Route },
     { href: "/admin/prompts", label: "Prompts", count: promptCount, icon: Library },
     { href: "/admin/ebooks", label: "Ebooks", count: ebookCount, icon: BookOpen },
     { href: "/admin/quiz", label: "Étapes de quiz", count: stageCount, icon: Swords },
     { href: "/admin/users", label: "Utilisateurs", count: userCount, icon: Users },
-    { href: "/admin/support", label: "Salon Premium", count: null, icon: MessageCircleHeart },
+    { href: "/admin/support", label: "Discussion", count: null, icon: MessageCircleHeart },
     { href: "/admin/settings", label: "Réglages", count: null, icon: Settings },
   ];
 
