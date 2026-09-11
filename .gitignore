@@ -35,3 +35,6 @@ next-env.d.ts
 
 # prisma
 /prisma/migrations
+
+# artefacts de vérification (next build lancé hors du .next du serveur de dev)
+/.next-verify/

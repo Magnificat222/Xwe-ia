@@ -1,0 +1,32 @@
+/**
+ * Polices auto-hébergées.
+ *
+ * On n'utilise pas `next/font/google` : cela impose une requête vers
+ * fonts.googleapis.com au moment du build, ce qui rend la compilation
+ * dépendante du réseau et ajoute un tiers au chargement des pages.
+ * Les fichiers @fontsource sont servis depuis notre propre domaine : build
+ * reproductible, aucune fuite de données vers Google, et un rendu plus rapide.
+ */
+
+/* Display — Unbounded : géométrique, contemporain, l'énergie de la marque. */
+@import "@fontsource-variable/unbounded/wght.css";
+
+/* Texte courant — Inter. */
+@import "@fontsource-variable/inter/wght.css";
+
+/* Monospace — IBM Plex Mono, réservé aux surtitres et aux valeurs chiffrées. */
+@import "@fontsource/ibm-plex-mono/latin-400.css";
+@import "@fontsource/ibm-plex-mono/latin-500.css";
+
+/* Polices de lecture alternatives, proposées dans les Paramètres. */
+@import "@fontsource/atkinson-hyperlegible/latin-400.css";
+@import "@fontsource/atkinson-hyperlegible/latin-700.css";
+@import "@fontsource-variable/bricolage-grotesque/wght.css";
+
+:root {
+  --font-unbounded: "Unbounded Variable";
+  --font-inter: "Inter Variable";
+  --font-plex-mono: "IBM Plex Mono";
+  --font-atkinson: "Atkinson Hyperlegible";
+  --font-bricolage: "Bricolage Grotesque Variable";
+}

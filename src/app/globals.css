@@ -1,0 +1,216 @@
+@import "tailwindcss";
+
+/* ==================================================================
+   Xwé IA — Design tokens
+   Palette issue du logo : soleil braise, circuiterie feuillage, filament or,
+   sur un noir profond. Identité conservée depuis la version précédente,
+   enrichie de tokens sémantiques (surfaces, bordures, états).
+   ================================================================== */
+
+@theme {
+  /* Surfaces */
+  --color-noir: #100d0a;
+  --color-noir-soft: #1a1512;
+  --color-noir-elevated: #241d17;
+  --color-noir-raised: #2f261e;
+
+  /* Texte */
+  --color-ivoire: #f5efe4;
+  --color-ivoire-dim: #b8ab96;
+  --color-ivoire-faint: #7d735f;
+
+  /* Accents de marque */
+  --color-or: #c9a24b;
+  --color-or-vif: #e6c675;
+  --color-or-sombre: #8d6f2f;
+  --color-braise: #c9531f;
+  --color-braise-vif: #e8703a;
+  --color-braise-soft: #7a3315;
+  --color-feuillage: #3a7a52;
+  --color-feuillage-vif: #4f9e6b;
+  --color-feuillage-soft: #1e4530;
+
+  /* États */
+  --color-succes: #4f9e6b;
+  --color-alerte: #d9a441;
+  --color-erreur: #d8543a;
+  --color-info: #5b8fb0;
+
+  /* Typographies */
+  --font-display: var(--font-unbounded), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  /* Formes */
+  --radius-card: 0.875rem;
+  --radius-panel: 1.25rem;
+
+  /* Animations */
+  --animate-shimmer: shimmer 1.8s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-or: pulse-or 2.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes pulse-or {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.85; }
+}
+
+/* ------------------------------------------------------------------
+   Thème clair — mêmes noms de tokens, valeurs inversées, pour que tout
+   composant fonctionne dans les deux thèmes sans variante dédiée.
+   ------------------------------------------------------------------ */
+.light {
+  --color-noir: #fdfaf4;
+  --color-noir-soft: #f6efe2;
+  --color-noir-elevated: #ffffff;
+  --color-noir-raised: #f1e7d6;
+
+  --color-ivoire: #1c1712;
+  --color-ivoire-dim: #6b6153;
+  --color-ivoire-faint: #9a8f7d;
+
+  --color-or: #a9803a;
+  --color-or-vif: #8f6a2c;
+  --color-or-sombre: #d8bd85;
+  --color-braise: #b3410f;
+  --color-braise-vif: #98380c;
+  --color-braise-soft: #eccdba;
+  --color-feuillage: #2c5f3e;
+  --color-feuillage-vif: #21492f;
+  --color-feuillage-soft: #d3e3d8;
+
+  color-scheme: light;
+}
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--color-noir);
+  color: var(--color-ivoire);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--color-or);
+  color: #100d0a;
+}
+
+/* Focus visible homogène sur toute l'application (accessibilité clavier) */
+:focus-visible {
+  outline: 2px solid var(--color-or);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Préférences de police de lecture (Paramètres) */
+.font-pref-atkinson { --font-body: var(--font-atkinson); }
+.font-pref-bricolage { --font-body: var(--font-bricolage); }
+
+/* ------------------------------------------------------------------
+   Signatures graphiques Xwé IA
+   ------------------------------------------------------------------ */
+
+/* Le liseré : bande de triangles or reprise de l'ornement du logo. */
+.lisere {
+  height: 6px;
+  background-image:
+    linear-gradient(135deg, var(--color-or) 25%, transparent 25%),
+    linear-gradient(225deg, var(--color-or) 25%, transparent 25%);
+  background-position: 0 0;
+  background-size: 12px 12px;
+  background-repeat: repeat-x;
+  opacity: 0.5;
+}
+
+/* La trajectoire : fil vertical or → braise le long des timelines. */
+.trajectoire {
+  background: linear-gradient(180deg, var(--color-or) 0%, var(--color-braise) 100%);
+}
+.trajectoire-done {
+  background: linear-gradient(180deg, var(--color-feuillage) 0%, var(--color-feuillage-vif) 100%);
+}
+
+/* Halo de marque en arrière-plan des sections héro. */
+.halo-braise {
+  background:
+    radial-gradient(60% 50% at 15% 0%, color-mix(in oklab, var(--color-braise) 22%, transparent) 0%, transparent 70%),
+    radial-gradient(50% 45% at 85% 15%, color-mix(in oklab, var(--color-feuillage) 18%, transparent) 0%, transparent 70%);
+}
+
+/* Motif circuit discret (filigrane des bandeaux). */
+.motif-circuit {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--color-ivoire) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--color-ivoire) 8%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Texte en dégradé de marque. */
+.texte-braise {
+  background: linear-gradient(100deg, var(--color-or-vif), var(--color-braise));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Squelette de chargement. */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--color-ivoire) 5%, transparent) 0%,
+    color-mix(in oklab, var(--color-ivoire) 11%, transparent) 50%,
+    color-mix(in oklab, var(--color-ivoire) 5%, transparent) 100%
+  );
+  background-size: 600px 100%;
+  animation: var(--animate-shimmer);
+}
+
+/* Barre de défilement discrète, aux couleurs de la marque. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--color-or) 40%, transparent) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--color-or) 35%, transparent);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--color-or) 60%, transparent);
+}
+
+/* Zone de sécurité iOS pour la barre d'onglets mobile. */
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* ------------------------------------------------------------------
+   Réduction des animations — respectée en CSS ET côté Framer Motion
+   (voir useReducedMotion dans src/components/motion).
+   ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  html { scroll-behavior: auto; }
+}
