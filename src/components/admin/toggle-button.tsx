@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { Eye, EyeOff, Pin, Lock, Trash2, Check } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
+import type { ActionState } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 
 const ICONS = {
@@ -21,7 +22,7 @@ export function ToggleButton({
   confirm: confirmMessage,
   tone = "or",
 }: {
-  action: () => Promise<void>;
+  action: () => Promise<void | ActionState>;
   active: boolean;
   variant?: keyof typeof ICONS;
   label: string;
@@ -29,6 +30,7 @@ export function ToggleButton({
   tone?: "or" | "braise" | "erreur";
 }) {
   const [pending, start] = useTransition();
+  const { push } = useToast();
   const Icon = active ? ICONS[variant].on : ICONS[variant].off;
 
   return (
@@ -40,7 +42,12 @@ export function ToggleButton({
       title={label}
       onClick={() => {
         if (confirmMessage && !confirm(confirmMessage)) return;
-        start(() => action());
+        start(async () => {
+          // L'action peut renvoyer un message : on le préfère au libellé générique.
+          const result = await action();
+          if (result?.error) push(result.error, "erreur");
+          else if (result?.success) push(result.success, "succes");
+        });
       }}
       className={cn(
         "flex h-9 w-9 items-center justify-center rounded-lg transition-colors disabled:opacity-40",
@@ -61,7 +68,7 @@ export function DeleteButton({
   label,
   confirm: confirmMessage,
 }: {
-  action: () => Promise<void>;
+  action: () => Promise<void | ActionState>;
   label: string;
   confirm: string;
 }) {
@@ -77,8 +84,9 @@ export function DeleteButton({
       onClick={() => {
         if (!confirm(confirmMessage)) return;
         start(async () => {
-          await action();
-          push("Élément supprimé.", "succes");
+          const result = await action();
+          if (result?.error) push(result.error, "erreur");
+          else push(result?.success ?? "Élément supprimé.", "succes");
         });
       }}
       className="flex h-9 w-9 items-center justify-center rounded-lg text-ivoire-faint transition-colors hover:bg-erreur/10 hover:text-erreur disabled:opacity-40"

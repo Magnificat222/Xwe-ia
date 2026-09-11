@@ -27,6 +27,7 @@ import { useToast } from "@/components/ui/toast";
 import { MissionFieldRenderer } from "./mission-fields";
 import { saveDraftAction, completeMissionAction } from "@/lib/actions/app";
 import { cn } from "@/lib/utils";
+import { AiAssistant } from "@/components/app/ai-assistant";
 
 interface MissionData {
   slug: string;
@@ -235,6 +236,8 @@ export function MissionPlayer({
               </ol>
             </Card>
           )}
+
+          {mission.aiAssist && <AiAssistant missionSlug={mission.slug} />}
 
           {mission.prompts.length > 0 && (
             <Card tone="or">

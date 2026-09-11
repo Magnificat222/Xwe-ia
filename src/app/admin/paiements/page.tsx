@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
-import { CreditCard, Check, Clock, XCircle } from "lucide-react";
+import { CreditCard, Check, Clock, XCircle, Smartphone, Star } from "lucide-react";
+import { Card, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Stat, SectionHeading } from "@/components/ui/misc";
 import { PageTransition } from "@/components/motion";
 import { DataTable, type Column } from "@/components/admin/data-table";
 import { ConfirmPaymentButton } from "@/components/admin/payment-actions";
 import { requireRole } from "@/lib/auth/guards";
+import { EntityEditor, EditTrigger } from "@/components/admin/entity-editor";
+import { ToggleButton, DeleteButton } from "@/components/admin/toggle-button";
+import { PaymentNumberFields } from "@/components/admin/payment-number-fields";
 import { getAdminPayments } from "@/lib/queries/admin";
+import { getPaymentNumbers } from "@/lib/queries/commerce-admin";
+import {
+  savePaymentNumberAction,
+  togglePaymentNumberAction,
+  deletePaymentNumberAction,
+} from "@/lib/actions/admin-commerce";
 import { formatXof, formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Paiements" };
@@ -25,7 +35,7 @@ const STATUS: Record<
 
 export default async function AdminPaymentsPage() {
   await requireRole("admin", "/admin/paiements");
-  const payments = await getAdminPayments();
+  const [payments, numbers] = await Promise.all([getAdminPayments(), getPaymentNumbers()]);
 
   const collected = payments
     .filter((payment) => payment.status === "completed")
@@ -101,12 +111,88 @@ export default async function AdminPaymentsPage() {
         <Stat label="Transactions" value={payments.length} icon={<CreditCard size={18} />} tone="braise" />
       </div>
 
-      <DataTable
-        columns={columns}
-        rows={payments}
-        empty="Aucun paiement enregistré."
-        title={(row) => row.email ?? "Compte supprimé"}
-      />
+      <section>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="flex items-center gap-2 font-display text-lg text-ivoire">
+              <Smartphone size={18} className="text-or" /> Numéros Mobile Money
+            </h2>
+            <p className="mt-1 text-sm text-ivoire-dim">
+              Ces numéros s'affichent au moment du paiement. Désactive-en un plutôt que de le
+              supprimer : les commandes passées y font référence.
+            </p>
+          </div>
+          <EntityEditor
+            action={savePaymentNumberAction}
+            title="Nouveau numéro"
+            description="Le numéro principal est celui proposé en premier à l'utilisateur."
+          >
+            <PaymentNumberFields />
+          </EntityEditor>
+        </div>
+
+        {numbers.length === 0 ? (
+          <Card tone="braise">
+            <p className="text-sm text-ivoire">
+              Aucun numéro enregistré : les utilisateurs ne peuvent pas payer. Ajoute au moins un
+              numéro Mobile Money.
+            </p>
+          </Card>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {numbers.map((row) => (
+              <Card key={row.id} tone={row.isPrimary ? "or" : "default"}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <CardTitle className="flex flex-wrap items-center gap-2 text-sm">
+                      {row.label}
+                      {row.isPrimary && (
+                        <Badge tone="or">
+                          <Star size={11} /> Principal
+                        </Badge>
+                      )}
+                      {!row.isActive && <Badge tone="outline">Inactif</Badge>}
+                    </CardTitle>
+                    <p className="mt-1.5 font-mono text-sm text-braise-vif">{row.number}</p>
+                    {row.holderName && (
+                      <p className="mt-0.5 text-xs text-ivoire-faint">{row.holderName}</p>
+                    )}
+                  </div>
+                  <div className="flex shrink-0 items-center gap-1">
+                    <EntityEditor
+                      action={savePaymentNumberAction}
+                      title="Modifier le numéro"
+                      trigger={<EditTrigger />}
+                    >
+                      <PaymentNumberFields number={row} />
+                    </EntityEditor>
+                    <ToggleButton
+                      action={togglePaymentNumberAction.bind(null, row.id, !row.isActive)}
+                      active={row.isActive}
+                      label={row.isActive ? "Désactiver" : "Activer"}
+                    />
+                    <DeleteButton
+                      action={deletePaymentNumberAction.bind(null, row.id)}
+                      label="Supprimer le numéro"
+                      confirm={`Supprimer le numéro ${row.number} ?`}
+                    />
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section>
+        <h2 className="mb-4 font-display text-lg text-ivoire">Transactions</h2>
+        <DataTable
+          columns={columns}
+          rows={payments}
+          empty="Aucun paiement enregistré."
+          title={(row) => row.email ?? "Compte supprimé"}
+        />
+      </section>
     </PageTransition>
   );
 }

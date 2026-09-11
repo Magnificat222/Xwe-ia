@@ -84,6 +84,8 @@ export const notificationTypeEnum = pgEnum("notification_type", [
   "discussion",
   "arena",
   "payment",
+  "premium",
+  "resource",
   "support",
 ]);
 export const paymentStatusEnum = pgEnum("payment_status", [
@@ -92,7 +94,43 @@ export const paymentStatusEnum = pgEnum("payment_status", [
   "failed",
   "refunded",
 ]);
-export const paymentProviderEnum = pgEnum("payment_provider", ["kkiapay", "manual", "offline"]);
+// Le fournisseur est une donnée, pas une branche de code : ajouter un
+// prestataire (momo_api, carte, agrégateur) ne change que cette liste et
+// l'implémentation correspondante dans lib/payments/providers.
+export const paymentProviderEnum = pgEnum("payment_provider", [
+  "momo_manual",
+  "momo_api",
+  "kkiapay",
+  "manual",
+  "offline",
+]);
+
+/**
+ * Cycle de vie d'une commande, distinct de celui du paiement : une commande
+ * peut être abandonnée ou expirer sans qu'aucun paiement n'ait eu lieu.
+ */
+export const orderStatusEnum = pgEnum("order_status", [
+  "draft",            // créée, l'utilisateur n'a pas encore déclaré son paiement
+  "awaiting_payment", // instructions affichées
+  "declared",         // l'utilisateur a déclaré avoir payé — à vérifier
+  "under_review",     // l'administration demande une vérification
+  "confirmed",        // paiement validé, accès ouvert
+  "rejected",         // paiement refusé
+  "canceled",         // annulée par l'utilisateur
+  "expired",          // délai dépassé
+]);
+
+export const discountTypeEnum = pgEnum("discount_type", ["percent", "amount", "fixed_price"]);
+
+export const aiFeatureEnum = pgEnum("ai_feature", [
+  "mission_assist",
+  "brainstorm",
+  "rephrase",
+  "structure",
+  "analyze",
+  "document",
+  "explain",
+]);
 export const purchaseKindEnum = pgEnum("purchase_kind", ["pathway", "premium", "resource"]);
 export const subscriptionPlanEnum = pgEnum("subscription_plan", ["free", "premium"]);
 export const subscriptionStatusEnum = pgEnum("subscription_status", [
@@ -109,6 +147,17 @@ export const duelStatusEnum = pgEnum("duel_status", [
   "expired",
 ]);
 export const reportStatusEnum = pgEnum("report_status", ["open", "reviewing", "resolved", "dismissed"]);
+export const moderationActionEnum = pgEnum("moderation_action", [
+  "hide",
+  "unhide",
+  "delete",
+  "lock",
+  "unlock",
+  "pin",
+  "unpin",
+  "suspend_user",
+  "restore_user",
+]);
 export const ticketStatusEnum = pgEnum("ticket_status", ["open", "pending", "closed"]);
 export const senderRoleEnum = pgEnum("sender_role", ["user", "staff", "ai"]);
 
@@ -137,6 +186,7 @@ export const users = pgTable(
 );
 
 /** Données d'onboarding : uniquement ce qui sert réellement à personnaliser. */
+/* profils */
 export const profiles = pgTable(
   "profiles",
   {
@@ -398,6 +448,10 @@ export const tools = pgTable(
     logoUrl: text("logo_url"),
     isFree: boolean("is_free").notNull().default(true),
     isPublished: boolean("is_published").notNull().default(true),
+    isFeatured: boolean("is_featured").notNull().default(false),
+    level: levelEnum("level").notNull().default("debutant"),
+    officialUrl: text("official_url"),
+    checkedAt: timestamp("checked_at", { withTimezone: true }),
     position: integer("position").notNull().default(0),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
@@ -597,8 +651,13 @@ export const discussions = pgTable(
       onDelete: "set null",
     }),
     replyCount: integer("reply_count").notNull().default(0),
+    followerCount: integer("follower_count").notNull().default(0),
+    viewCount: integer("view_count").notNull().default(0),
     isPinned: boolean("is_pinned").notNull().default(false),
     isLocked: boolean("is_locked").notNull().default(false),
+    // Masquer conserve le contenu pour la modération ; supprimer efface.
+    isHidden: boolean("is_hidden").notNull().default(false),
+    hiddenReason: varchar("hidden_reason", { length: 200 }),
     lastActivityAt: timestamp("last_activity_at", { withTimezone: true }).notNull().defaultNow(),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
@@ -619,6 +678,8 @@ export const discussionReplies = pgTable(
     body: text("body").notNull(),
     parentId: varchar("parent_id", { length: 32 }),
     isAnswer: boolean("is_answer").notNull().default(false),
+    isHidden: boolean("is_hidden").notNull().default(false),
+    hiddenReason: varchar("hidden_reason", { length: 200 }),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
@@ -807,6 +868,141 @@ export const purchases = pgTable(
   ],
 );
 
+/**
+ * Commande — le pivot commercial.
+ *
+ * Elle fige le prix au moment de l'achat (`amountXof`) : une promotion qui
+ * expire ou un changement de tarif ne doit jamais modifier rétroactivement ce
+ * qu'une personne doit payer. La référence lisible (XWE-2026-XXXX) est ce que
+ * l'utilisateur inscrit dans son message MoMo.
+ */
+export const orders = pgTable(
+  "orders",
+  {
+    id: id(),
+    reference: varchar("reference", { length: 24 }).notNull(),
+    userId: varchar("user_id", { length: 32 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    kind: purchaseKindEnum("kind").notNull().default("pathway"),
+    pathwayId: varchar("pathway_id", { length: 32 }).references(() => pathways.id, {
+      onDelete: "set null",
+    }),
+    status: orderStatusEnum("status").notNull().default("draft"),
+
+    // Prix figé : listPriceXof = tarif catalogue, amountXof = à payer.
+    listPriceXof: integer("list_price_xof").notNull().default(0),
+    amountXof: integer("amount_xof").notNull().default(0),
+    promotionId: varchar("promotion_id", { length: 32 }),
+
+    // Ce que l'utilisateur déclare après avoir payé.
+    payerNumber: varchar("payer_number", { length: 32 }),
+    declaredAmountXof: integer("declared_amount_xof"),
+    declaredReference: varchar("declared_reference", { length: 120 }),
+    declaredAt: timestamp("declared_at", { withTimezone: true }),
+    proofUrl: text("proof_url"),
+    payeeNumber: varchar("payee_number", { length: 32 }),
+
+    // Traitement par l'administration.
+    reviewedBy: varchar("reviewed_by", { length: 32 }),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+    reviewNote: text("review_note"),
+
+    paymentId: varchar("payment_id", { length: 32 }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    uniqueIndex("orders_reference_idx").on(t.reference),
+    index("orders_status_idx").on(t.status, t.createdAt),
+    index("orders_user_idx").on(t.userId, t.createdAt),
+  ],
+);
+
+/** Journal d'une commande : qui a fait quoi, quand. Jamais modifié. */
+export const orderEvents = pgTable(
+  "order_events",
+  {
+    id: id(),
+    orderId: varchar("order_id", { length: 32 })
+      .notNull()
+      .references(() => orders.id, { onDelete: "cascade" }),
+    status: orderStatusEnum("status").notNull(),
+    note: text("note"),
+    actorId: varchar("actor_id", { length: 32 }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("order_events_order_idx").on(t.orderId, t.createdAt)],
+);
+
+/**
+ * Numéros MoMo qui reçoivent les paiements. Administrables : jamais en dur
+ * dans le code, conformément à la règle produit.
+ */
+export const paymentNumbers = pgTable(
+  "payment_numbers",
+  {
+    id: id(),
+    label: varchar("label", { length: 80 }).notNull().default("MTN MoMo"),
+    number: varchar("number", { length: 32 }).notNull(),
+    holderName: varchar("holder_name", { length: 120 }),
+    provider: varchar("provider", { length: 40 }).notNull().default("mtn_momo"),
+    isPrimary: boolean("is_primary").notNull().default(false),
+    isActive: boolean("is_active").notNull().default(true),
+    position: integer("position").notNull().default(0),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("payment_numbers_active_idx").on(t.isActive, t.position)],
+);
+
+/**
+ * Promotion : soit globale, soit rattachée à un parcours. Le moteur de prix
+ * (lib/pricing.ts) est seul juge de son application.
+ */
+export const promotions = pgTable(
+  "promotions",
+  {
+    id: id(),
+    code: varchar("code", { length: 40 }),
+    label: varchar("label", { length: 160 }).notNull(),
+    pathwayId: varchar("pathway_id", { length: 32 }).references(() => pathways.id, {
+      onDelete: "cascade",
+    }),
+    appliesToPremium: boolean("applies_to_premium").notNull().default(false),
+    discountType: discountTypeEnum("discount_type").notNull().default("percent"),
+    discountValue: integer("discount_value").notNull().default(0),
+    startsAt: timestamp("starts_at", { withTimezone: true }),
+    endsAt: timestamp("ends_at", { withTimezone: true }),
+    maxRedemptions: integer("max_redemptions"),
+    redemptions: integer("redemptions").notNull().default(0),
+    isActive: boolean("is_active").notNull().default(true),
+    createdBy: varchar("created_by", { length: 32 }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("promotions_active_idx").on(t.isActive, t.endsAt)],
+);
+
+/** Historique des prix : exigé par l'administration, et utile en litige. */
+export const priceHistory = pgTable(
+  "price_history",
+  {
+    id: id(),
+    pathwayId: varchar("pathway_id", { length: 32 }).references(() => pathways.id, {
+      onDelete: "cascade",
+    }),
+    scope: varchar("scope", { length: 30 }).notNull().default("pathway"), // pathway | premium
+    oldPriceXof: integer("old_price_xof").notNull().default(0),
+    newPriceXof: integer("new_price_xof").notNull().default(0),
+    reason: varchar("reason", { length: 200 }),
+    changedBy: varchar("changed_by", { length: 32 }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("price_history_pathway_idx").on(t.pathwayId, t.createdAt)],
+);
+
 export const subscriptions = pgTable(
   "subscriptions",
   {
@@ -827,6 +1023,139 @@ export const subscriptions = pgTable(
 /* ------------------------------------------------------------------ *
  * 8. Plateforme
  * ------------------------------------------------------------------ */
+
+/**
+ * Chaque appel IA est enregistré : c'est ce qui rend les quotas applicables
+ * et la dépense mesurable. On stocke des compteurs, jamais le contenu produit.
+ */
+export const aiUsage = pgTable(
+  "ai_usage",
+  {
+    id: id(),
+    userId: varchar("user_id", { length: 32 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    feature: aiFeatureEnum("feature").notNull(),
+    provider: varchar("provider", { length: 40 }).notNull().default("offline"),
+    model: varchar("model", { length: 80 }),
+    inputTokens: integer("input_tokens").notNull().default(0),
+    outputTokens: integer("output_tokens").notNull().default(0),
+    latencyMs: integer("latency_ms").notNull().default(0),
+    missionId: varchar("mission_id", { length: 32 }),
+    ok: boolean("ok").notNull().default(true),
+    errorCode: varchar("error_code", { length: 60 }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    index("ai_usage_user_idx").on(t.userId, t.createdAt),
+    index("ai_usage_feature_idx").on(t.feature, t.createdAt),
+  ],
+);
+
+/**
+ * Quotas IA par plan, administrables. Une ligne par couple (plan, feature) ;
+ * l'absence de ligne signifie « valeur par défaut du code ».
+ */
+export const aiQuotas = pgTable(
+  "ai_quotas",
+  {
+    id: id(),
+    plan: subscriptionPlanEnum("plan").notNull().default("free"),
+    feature: aiFeatureEnum("feature").notNull(),
+    dailyLimit: integer("daily_limit").notNull().default(10),
+    monthlyLimit: integer("monthly_limit").notNull().default(100),
+    isEnabled: boolean("is_enabled").notNull().default(true),
+    updatedAt: updatedAt(),
+  },
+  (t) => [uniqueIndex("ai_quotas_uniq").on(t.plan, t.feature)],
+);
+
+/** Avantages Premium administrables : le marketing ne passe pas par le code. */
+export const premiumBenefits = pgTable(
+  "premium_benefits",
+  {
+    id: id(),
+    label: varchar("label", { length: 200 }).notNull(),
+    description: text("description").notNull().default(""),
+    icon: varchar("icon", { length: 60 }).notNull().default("Sparkles"),
+    position: integer("position").notNull().default(0),
+    isActive: boolean("is_active").notNull().default(true),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("premium_benefits_position_idx").on(t.position)],
+);
+
+/* ------------------------------------------------------------------ *
+ * Arène : badges
+ * ------------------------------------------------------------------ */
+
+export const badges = pgTable(
+  "badges",
+  {
+    id: id(),
+    slug: varchar("slug", { length: 80 }).notNull(),
+    label: varchar("label", { length: 120 }).notNull(),
+    description: text("description").notNull().default(""),
+    icon: varchar("icon", { length: 60 }).notNull().default("Trophy"),
+    // Règle d'obtention, interprétée par lib/services/badges.ts
+    ruleType: varchar("rule_type", { length: 40 }).notNull().default("missions_completed"),
+    threshold: integer("threshold").notNull().default(1),
+    isActive: boolean("is_active").notNull().default(true),
+    position: integer("position").notNull().default(0),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("badges_slug_idx").on(t.slug)],
+);
+
+export const userBadges = pgTable(
+  "user_badges",
+  {
+    id: id(),
+    userId: varchar("user_id", { length: 32 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    badgeId: varchar("badge_id", { length: 32 })
+      .notNull()
+      .references(() => badges.id, { onDelete: "cascade" }),
+    earnedAt: createdAt(),
+  },
+  (t) => [uniqueIndex("user_badges_uniq").on(t.userId, t.badgeId)],
+);
+
+/* ------------------------------------------------------------------ *
+ * Communauté : suivis et modération
+ * ------------------------------------------------------------------ */
+
+export const discussionFollows = pgTable(
+  "discussion_follows",
+  {
+    id: id(),
+    userId: varchar("user_id", { length: 32 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    discussionId: varchar("discussion_id", { length: 32 })
+      .notNull()
+      .references(() => discussions.id, { onDelete: "cascade" }),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("discussion_follows_uniq").on(t.userId, t.discussionId)],
+);
+
+/** Trace de modération : distincte de l'audit général, consultable par équipe. */
+export const moderationLogs = pgTable(
+  "moderation_logs",
+  {
+    id: id(),
+    moderatorId: varchar("moderator_id", { length: 32 }),
+    action: moderationActionEnum("action").notNull(),
+    entityType: varchar("entity_type", { length: 30 }).notNull(),
+    entityId: varchar("entity_id", { length: 32 }).notNull(),
+    reason: text("reason"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("moderation_logs_idx").on(t.entityType, t.createdAt)],
+);
 
 export const legalPages = pgTable(
   "legal_pages",
@@ -978,6 +1307,21 @@ export type Payment = typeof payments.$inferSelect;
 export type SiteSettings = typeof siteSettings.$inferSelect;
 export type LegalPage = typeof legalPages.$inferSelect;
 export type FaqItem = typeof faqItems.$inferSelect;
+export type Order = typeof orders.$inferSelect;
+export type OrderEvent = typeof orderEvents.$inferSelect;
+export type PaymentNumber = typeof paymentNumbers.$inferSelect;
+export type Promotion = typeof promotions.$inferSelect;
+export type PriceHistory = typeof priceHistory.$inferSelect;
+export type AiUsage = typeof aiUsage.$inferSelect;
+export type AiQuota = typeof aiQuotas.$inferSelect;
+export type PremiumBenefit = typeof premiumBenefits.$inferSelect;
+export type Badge = typeof badges.$inferSelect;
+export type UserBadge = typeof userBadges.$inferSelect;
+export type ModerationLog = typeof moderationLogs.$inferSelect;
+export type OrderStatus = (typeof orderStatusEnum.enumValues)[number];
+export type DiscountType = (typeof discountTypeEnum.enumValues)[number];
+export type AiFeature = (typeof aiFeatureEnum.enumValues)[number];
+export type ModerationAction = (typeof moderationActionEnum.enumValues)[number];
 export type Role = (typeof roleEnum.enumValues)[number];
 export type AccessType = (typeof accessTypeEnum.enumValues)[number];
 export type Level = (typeof levelEnum.enumValues)[number];

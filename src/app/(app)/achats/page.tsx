@@ -1,24 +1,60 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Receipt, ShoppingBag, Crown, Check, Clock, XCircle } from "lucide-react";
+import { Receipt, ShoppingBag, Crown, Check, Clock, XCircle, Search, Ban } from "lucide-react";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState, SectionHeading } from "@/components/ui/misc";
 import { PageTransition, Stagger, StaggerItem } from "@/components/motion";
 import { CheckoutButton } from "@/components/app/checkout";
+import { ResumeOrderButton, CancelOrderButton } from "@/components/app/order-actions";
 import { requireUser } from "@/lib/auth/guards";
-import { getUserPurchases, getUserPayments, getActiveSubscription } from "@/lib/queries/commerce";
+import { getUserPurchases, getActiveSubscription } from "@/lib/queries/commerce";
+import { getUserOrders } from "@/lib/queries/commerce-admin";
 import { getPathwayBySlug } from "@/lib/queries/catalogue";
+import { quotePathway } from "@/lib/pricing";
 import { formatXof, formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Mes achats" };
 
-const STATUS: Record<string, { label: string; tone: "or" | "feuillage" | "braise" | "outline"; icon: typeof Check }> = {
-  completed: { label: "Payé", tone: "feuillage", icon: Check },
-  pending: { label: "En attente", tone: "or", icon: Clock },
-  failed: { label: "Échoué", tone: "braise", icon: XCircle },
-  refunded: { label: "Remboursé", tone: "outline", icon: XCircle },
+/** Chaque état de commande dit à l'utilisateur ce qu'il doit faire, ou attendre. */
+const ORDER_STATUS: Record<
+  string,
+  { label: string; tone: "or" | "feuillage" | "braise" | "outline"; icon: typeof Check; hint: string }
+> = {
+  awaiting_payment: {
+    label: "À payer",
+    tone: "or",
+    icon: Clock,
+    hint: "Termine le paiement Mobile Money pour ouvrir ton accès.",
+  },
+  declared: {
+    label: "En vérification",
+    tone: "or",
+    icon: Search,
+    hint: "Nous vérifions ton paiement. Tu seras prévenu dès validation.",
+  },
+  under_review: {
+    label: "Vérification approfondie",
+    tone: "braise",
+    icon: Search,
+    hint: "Un point demande une vérification supplémentaire.",
+  },
+  confirmed: {
+    label: "Confirmé",
+    tone: "feuillage",
+    icon: Check,
+    hint: "Paiement validé, accès ouvert.",
+  },
+  rejected: {
+    label: "Refusé",
+    tone: "braise",
+    icon: XCircle,
+    hint: "Le paiement n'a pas pu être validé.",
+  },
+  canceled: { label: "Annulée", tone: "outline", icon: Ban, hint: "Commande annulée." },
+  expired: { label: "Expirée", tone: "outline", icon: Clock, hint: "Le délai est dépassé." },
+  draft: { label: "Brouillon", tone: "outline", icon: Clock, hint: "" },
 };
 
 export default async function PurchasesPage({
@@ -29,42 +65,134 @@ export default async function PurchasesPage({
   const session = await requireUser("/achats");
   const { parcours } = await searchParams;
 
-  const [purchases, payments, subscription, pending] = await Promise.all([
+  const [purchases, orders, subscription, target] = await Promise.all([
     getUserPurchases(session.id),
-    getUserPayments(session.id),
+    getUserOrders(session.id),
     getActiveSubscription(session.id),
     parcours ? getPathwayBySlug(parcours) : Promise.resolve(null),
   ]);
 
-  const alreadyOwned = pending
-    ? purchases.some((purchase) => purchase.pathwayId === pending.id)
+  const alreadyOwned = target
+    ? purchases.some((purchase) => purchase.pathwayId === target.id)
     : false;
+
+  // Prix recalculé en base, promotions comprises.
+  const quote = target && !alreadyOwned ? await quotePathway(target.id) : null;
+
+  // Une commande déjà ouverte pour ce parcours ? On y renvoie plutôt que d'en créer une autre.
+  const openOrder = target
+    ? orders.find(
+        (order) =>
+          order.pathwaySlug === target.slug &&
+          ["awaiting_payment", "declared", "under_review"].includes(order.status),
+      )
+    : undefined;
+
+  const activeOrders = orders.filter((order) =>
+    ["awaiting_payment", "declared", "under_review"].includes(order.status),
+  );
+  const pastOrders = orders.filter(
+    (order) => !["awaiting_payment", "declared", "under_review"].includes(order.status),
+  );
 
   return (
     <PageTransition className="mx-auto max-w-3xl space-y-8">
       <SectionHeading
         eyebrow="Ton compte"
         title="Mes achats"
-        description="Tes parcours achetés, ton abonnement et l'historique de tes paiements."
+        description="Tes commandes, tes parcours, ton abonnement et l'historique de tes paiements."
       />
 
-      {/* Achat en cours, arrivé depuis une page parcours. */}
-      {pending && !alreadyOwned && pending.accessType === "paid" && (
+      {/* Achat lancé depuis une fiche parcours. */}
+      {target && !alreadyOwned && target.accessType === "paid" && quote && (
         <Card tone="braise">
           <p className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-braise-vif">
             Achat en cours
           </p>
-          <CardTitle className="mt-2 text-base">{pending.title}</CardTitle>
-          <CardDescription>{pending.expectedResult}</CardDescription>
+          <CardTitle className="mt-2 text-base">{target.title}</CardTitle>
+          <CardDescription>{target.expectedResult}</CardDescription>
+
+          {quote.isDiscounted && quote.promotion && (
+            <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-feuillage/12 px-2.5 py-1 text-xs text-feuillage-vif">
+              {quote.promotion.label} · −{formatXof(quote.discountXof)}
+            </p>
+          )}
+
           <div className="mt-5">
-            <CheckoutButton
-              kind="pathway"
-              targetId={pending.id}
-              amountXof={pending.priceXof}
-              label="Acheter ce parcours"
-            />
+            {openOrder ? (
+              <ResumeOrderButton
+                orderId={openOrder.id}
+                reference={openOrder.reference}
+                amountXof={openOrder.amountXof}
+              />
+            ) : (
+              <CheckoutButton
+                kind="pathway"
+                targetSlug={target.slug}
+                amountXof={quote.amountXof}
+                listPriceXof={quote.listPriceXof}
+                label="Acheter ce parcours"
+              />
+            )}
           </div>
         </Card>
+      )}
+
+      {/* Commandes en cours : c'est l'information la plus utile de la page. */}
+      {activeOrders.length > 0 && (
+        <section>
+          <h2 className="mb-4 font-display text-lg text-ivoire">Commandes en cours</h2>
+          <Stagger className="space-y-2.5">
+            {activeOrders.map((order) => {
+              const status = ORDER_STATUS[order.status] ?? ORDER_STATUS.draft;
+              return (
+                <StaggerItem key={order.id}>
+                  <Card tone={order.status === "awaiting_payment" ? "or" : "default"}>
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <CardTitle className="text-sm">
+                          {order.kind === "premium"
+                            ? "Abonnement Premium"
+                            : (order.pathwayTitle ?? "Parcours")}
+                        </CardTitle>
+                        <p className="mt-1 font-mono text-xs text-braise-vif">{order.reference}</p>
+                        <p className="mt-1.5 text-xs leading-relaxed text-ivoire-dim">
+                          {status.hint}
+                        </p>
+                        {order.reviewNote && (
+                          <p className="mt-1.5 text-xs text-ivoire-faint">
+                            Note : {order.reviewNote}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex shrink-0 flex-col items-end gap-2">
+                        <Badge tone={status.tone}>
+                          <status.icon size={11} /> {status.label}
+                        </Badge>
+                        <span className="font-mono text-sm text-ivoire">
+                          {formatXof(order.amountXof)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap gap-2.5">
+                      {order.status === "awaiting_payment" && (
+                        <>
+                          <ResumeOrderButton
+                            orderId={order.id}
+                            reference={order.reference}
+                            amountXof={order.amountXof}
+                          />
+                          <CancelOrderButton orderId={order.id} />
+                        </>
+                      )}
+                    </div>
+                  </Card>
+                </StaggerItem>
+              );
+            })}
+          </Stagger>
+        </section>
       )}
 
       <Card tone={session.plan === "premium" ? "or" : "default"}>
@@ -131,19 +259,19 @@ export default async function PurchasesPage({
       </section>
 
       <section>
-        <h2 className="mb-4 font-display text-lg text-ivoire">Historique des paiements</h2>
-        {payments.length === 0 ? (
+        <h2 className="mb-4 font-display text-lg text-ivoire">Historique des commandes</h2>
+        {pastOrders.length === 0 ? (
           <Card>
-            <p className="text-sm text-ivoire-dim">Aucun paiement enregistré.</p>
+            <p className="text-sm text-ivoire-dim">Aucune commande terminée.</p>
           </Card>
         ) : (
           <Card className="p-0">
             <ul>
-              {payments.map((payment) => {
-                const status = STATUS[payment.status] ?? STATUS.pending;
+              {pastOrders.map((order) => {
+                const status = ORDER_STATUS[order.status] ?? ORDER_STATUS.draft;
                 return (
                   <li
-                    key={payment.id}
+                    key={order.id}
                     className="flex items-center justify-between gap-3 border-b border-ivoire/6 px-4 py-3.5 last:border-0"
                   >
                     <div className="flex min-w-0 items-center gap-3">
@@ -151,17 +279,19 @@ export default async function PurchasesPage({
                         <Receipt size={16} />
                       </span>
                       <div className="min-w-0">
-                        <p className="text-sm text-ivoire">
-                          {payment.kind === "premium" ? "Abonnement Premium" : "Achat de parcours"}
+                        <p className="truncate text-sm text-ivoire">
+                          {order.kind === "premium"
+                            ? "Abonnement Premium"
+                            : (order.pathwayTitle ?? "Parcours")}
                         </p>
-                        <p className="text-xs text-ivoire-faint">
-                          {formatDate(payment.createdAt)} · {payment.provider}
+                        <p className="font-mono text-xs text-ivoire-faint">
+                          {order.reference} · {formatDate(order.createdAt)}
                         </p>
                       </div>
                     </div>
                     <div className="flex shrink-0 items-center gap-3">
                       <span className="font-mono text-sm text-ivoire">
-                        {formatXof(payment.amountXof)}
+                        {formatXof(order.amountXof)}
                       </span>
                       <Badge tone={status.tone}>
                         <status.icon size={11} /> {status.label}

@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SectionHeading, Lisere } from "@/components/ui/misc";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
-import { getSettings, getPathways, getFaq } from "@/lib/queries/catalogue";
+import { getPathways, getFaq } from "@/lib/queries/catalogue";
+import { quotePremium, quotePathways } from "@/lib/pricing";
+import { getPremiumBenefits } from "@/lib/queries/commerce-admin";
 import { formatXof } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -14,17 +16,37 @@ export const metadata: Metadata = {
   description: "Gratuit pour commencer, achat unique par parcours ou abonnement Premium.",
 };
 
-export const revalidate = 1800;
+export const revalidate = 300;
 
 export default async function PricingPage() {
-  const [settings, pathways, faq] = await Promise.all([getSettings(), getPathways(), getFaq()]);
-  const premiumPrice = settings?.premiumPriceXof ?? 5500;
+  const [pathways, faq, premiumQuote, benefits] = await Promise.all([
+    getPathways(),
+    getFaq(),
+    quotePremium(),
+    getPremiumBenefits(true),
+  ]);
 
   const free = pathways.filter((p) => p.accessType === "free");
   const paid = pathways.filter((p) => p.accessType === "paid");
-  const prices = paid.map((p) => p.priceXof).filter(Boolean);
-  const min = prices.length ? Math.min(...prices) : 500;
-  const max = prices.length ? Math.max(...prices) : 2500;
+
+  // Les prix affichés viennent du moteur de tarification, promotions comprises.
+  const quotes = await quotePathways(paid.map((p) => p.id));
+  const amounts = paid
+    .map((p) => quotes.get(p.id)?.amountXof ?? p.priceXof)
+    .filter((amount) => amount > 0);
+  const min = amounts.length ? Math.min(...amounts) : 500;
+  const max = amounts.length ? Math.max(...amounts) : 2500;
+
+  // On n'annonce Premium comme « inclus » que si le catalogue payant existe.
+  const premiumFeatures =
+    benefits.length > 0
+      ? benefits.map((b) => b.label)
+      : [
+          "Tous les parcours, y compris payants",
+          "Tous les jeux de l'arène",
+          "La bibliothèque complète de prompts",
+          "Sans engagement",
+        ];
 
   return (
     <div>
@@ -91,7 +113,7 @@ export default async function PricingPage() {
                   "Accès permanent au parcours acheté",
                   "Toutes ses missions et ressources",
                   "Le livrable final téléchargeable",
-                  "Mobile Money ou carte bancaire",
+                  "Paiement par Mobile Money",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2.5 text-sm text-ivoire-dim">
                     <Check size={15} className="mt-0.5 shrink-0 text-braise-vif" /> {item}
@@ -116,19 +138,18 @@ export default async function PricingPage() {
               </span>
               <Badge tone="or">Premium</Badge>
               <p className="mt-4 font-display text-3xl text-ivoire">
-                {premiumPrice.toLocaleString("fr-FR")}{" "}
+                {premiumQuote.amountXof.toLocaleString("fr-FR")}{" "}
                 <span className="text-base text-ivoire-dim">FCFA / mois</span>
               </p>
+              {premiumQuote.isDiscounted && (
+                <p className="mt-1.5 text-sm text-ivoire-faint">
+                  <span className="line-through">{formatXof(premiumQuote.listPriceXof)}</span>{" "}
+                  <span className="text-braise-vif">{premiumQuote.promotion?.label}</span>
+                </p>
+              )}
               <CardDescription className="mt-2">Tout Xwé IA, sans limite.</CardDescription>
               <ul className="mt-5 flex-1 space-y-2.5">
-                {[
-                  "Tous les parcours, y compris payants",
-                  "Tous les jeux de l'arène",
-                  "La bibliothèque complète de prompts",
-                  "Les nouveautés en avance",
-                  "Support prioritaire",
-                  "Sans engagement",
-                ].map((item) => (
+                {premiumFeatures.map((item) => (
                   <li key={item} className="flex items-start gap-2.5 text-sm text-ivoire-dim">
                     <Check size={15} className="mt-0.5 shrink-0 text-or" /> {item}
                   </li>
@@ -159,8 +180,27 @@ export default async function PricingPage() {
                           {pathway.missionCount} missions · {pathway.expectedResult}
                         </p>
                       </div>
-                      <span className="shrink-0 font-mono text-sm text-or">
-                        {formatXof(pathway.priceXof)}
+                      <span className="shrink-0 text-right">
+                        {(() => {
+                          const quote = quotes.get(pathway.id);
+                          if (quote?.isDiscounted) {
+                            return (
+                              <>
+                                <span className="block font-mono text-sm text-or">
+                                  {formatXof(quote.amountXof)}
+                                </span>
+                                <span className="block font-mono text-[0.7rem] text-ivoire-faint line-through">
+                                  {formatXof(quote.listPriceXof)}
+                                </span>
+                              </>
+                            );
+                          }
+                          return (
+                            <span className="font-mono text-sm text-or">
+                              {formatXof(quote?.amountXof ?? pathway.priceXof)}
+                            </span>
+                          );
+                        })()}
                       </span>
                     </Card>
                   </Link>

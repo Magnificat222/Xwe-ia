@@ -21,6 +21,11 @@ import {
   LifeBuoy,
   Settings,
   ScrollText,
+  Receipt,
+  TicketPercent,
+  Tag,
+  TrendingUp,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -39,6 +44,7 @@ const GROUPS: { title: string; links: AdminLink[] }[] = [
     links: [
       { href: "/admin", label: "Vue d'ensemble", icon: LayoutDashboard },
       { href: "/admin/statistiques", label: "Statistiques", icon: ScrollText, minimum: "admin" },
+      { href: "/admin/commerce", label: "Tableau commercial", icon: TrendingUp, minimum: "admin" },
     ],
   },
   {
@@ -66,7 +72,10 @@ const GROUPS: { title: string; links: AdminLink[] }[] = [
   {
     title: "Monétisation",
     links: [
+      { href: "/admin/commandes", label: "Commandes", icon: Receipt, minimum: "admin" },
       { href: "/admin/paiements", label: "Paiements", icon: CreditCard, minimum: "admin" },
+      { href: "/admin/prix", label: "Prix", icon: Tag, minimum: "admin" },
+      { href: "/admin/promotions", label: "Promotions", icon: TicketPercent, minimum: "admin" },
       { href: "/admin/premium", label: "Abonnements", icon: Crown, minimum: "admin" },
     ],
   },
@@ -74,6 +83,7 @@ const GROUPS: { title: string; links: AdminLink[] }[] = [
     title: "Plateforme",
     links: [
       { href: "/admin/legal", label: "Pages légales", icon: Scale, minimum: "admin" },
+      { href: "/admin/ia", label: "Intelligence artificielle", icon: Sparkles, minimum: "admin" },
       { href: "/admin/parametres", label: "Paramètres", icon: Settings, minimum: "admin" },
     ],
   },

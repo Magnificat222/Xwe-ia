@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Crown, Check, Sparkles, Swords, Wrench, FileText, Headphones, Zap } from "lucide-react";
+import { Crown, Check, Sparkles } from "lucide-react";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SectionHeading, Lisere } from "@/components/ui/misc";
 import { PageTransition, Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { CheckoutButton } from "@/components/app/checkout";
-import { getSettings, getFaq } from "@/lib/queries/catalogue";
+import { getFaq } from "@/lib/queries/catalogue";
+import { getPremiumBenefits } from "@/lib/queries/commerce-admin";
+import { quotePremium } from "@/lib/pricing";
+import { resolveIcon } from "@/lib/icons";
+import { formatXof } from "@/lib/utils";
 import { getSession } from "@/lib/auth/session";
 import { getActiveSubscription } from "@/lib/queries/commerce";
 import { formatDate } from "@/lib/utils";
@@ -17,43 +21,17 @@ export const metadata: Metadata = {
   description: "Accède à tous les parcours, tous les jeux et tous les livrables.",
 };
 
-const BENEFITS = [
-  {
-    icon: Sparkles,
-    title: "Tous les parcours",
-    detail: "L'intégralité du catalogue, y compris les parcours payants et les nouveautés.",
-  },
-  {
-    icon: FileText,
-    title: "Livrables illimités",
-    detail: "Produis et télécharge autant de documents que nécessaire.",
-  },
-  {
-    icon: Swords,
-    title: "Arène complète",
-    detail: "Tous les jeux, tous les défis, le classement et les duels.",
-  },
-  {
-    icon: Wrench,
-    title: "Outils et prompts",
-    detail: "La bibliothèque complète de prompts et de ressources.",
-  },
-  {
-    icon: Zap,
-    title: "Nouveautés en avance",
-    detail: "Les nouveaux parcours te sont ouverts dès leur publication.",
-  },
-  {
-    icon: Headphones,
-    title: "Support prioritaire",
-    detail: "Tes demandes passent en tête de file.",
-  },
-];
-
 export default async function PremiumPage() {
-  const [settings, session, faq] = await Promise.all([getSettings(), getSession(), getFaq()]);
+  // Prix et avantages viennent de la base : l'administration les pilote sans
+  // qu'une ligne de code ne change.
+  const [quote, session, faq, benefits] = await Promise.all([
+    quotePremium(),
+    getSession(),
+    getFaq(),
+    getPremiumBenefits(true),
+  ]);
   const subscription = session ? await getActiveSubscription(session.id) : null;
-  const price = settings?.premiumPriceXof ?? 5500;
+  const price = quote.amountXof;
   const isPremium = session?.plan === "premium";
 
   return (
@@ -135,12 +113,18 @@ export default async function PremiumPage() {
               {price.toLocaleString("fr-FR")}{" "}
               <span className="text-base text-ivoire-dim">FCFA / mois</span>
             </p>
+            {quote.isDiscounted && (
+              <p className="mt-1.5 text-sm text-feuillage-vif">
+                <span className="line-through opacity-60">{formatXof(quote.listPriceXof)}</span>{" "}
+                {quote.promotion?.label}
+              </p>
+            )}
             <p className="mt-2 text-sm text-ivoire-dim">Sans engagement, résiliable à tout moment.</p>
             <ul className="mt-5 flex-1 space-y-2.5">
-              {BENEFITS.map((benefit) => (
-                <li key={benefit.title} className="flex items-start gap-2.5 text-sm text-ivoire-dim">
+              {benefits.map((benefit) => (
+                <li key={benefit.id} className="flex items-start gap-2.5 text-sm text-ivoire-dim">
                   <Check size={15} className="mt-0.5 shrink-0 text-or" />
-                  {benefit.title}
+                  {benefit.label}
                 </li>
               ))}
             </ul>
@@ -150,7 +134,12 @@ export default async function PremiumPage() {
                   Déjà abonné
                 </Button>
               ) : session ? (
-                <CheckoutButton kind="premium" amountXof={price} label="Passer Premium" />
+                <CheckoutButton
+                  kind="premium"
+                  amountXof={price}
+                  listPriceXof={quote.listPriceXof}
+                  label="Passer Premium"
+                />
               ) : (
                 <Link href="/inscription?suite=/premium">
                   <Button fullWidth icon={<Crown size={16} />}>
@@ -166,25 +155,28 @@ export default async function PremiumPage() {
       <section>
         <SectionHeading eyebrow="Ce que ça change" title="Concrètement, tu obtiens" />
         <Stagger className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {BENEFITS.map((benefit) => (
-            <StaggerItem key={benefit.title}>
-              <Card className="h-full">
-                <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-or/10 text-or">
-                  <benefit.icon size={18} strokeWidth={1.6} />
-                </span>
-                <CardTitle className="text-sm">{benefit.title}</CardTitle>
-                <CardDescription className="text-xs">{benefit.detail}</CardDescription>
-              </Card>
-            </StaggerItem>
-          ))}
+          {benefits.map((benefit) => {
+            const Icon = resolveIcon(benefit.icon, Sparkles);
+            return (
+              <StaggerItem key={benefit.id}>
+                <Card className="h-full">
+                  <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-or/10 text-or">
+                    <Icon size={18} strokeWidth={1.6} />
+                  </span>
+                  <CardTitle className="text-sm">{benefit.label}</CardTitle>
+                  <CardDescription className="text-xs">{benefit.description}</CardDescription>
+                </Card>
+              </StaggerItem>
+            );
+          })}
         </Stagger>
       </section>
 
       <Card>
         <CardTitle className="text-base">Tu préfères payer à l'unité ?</CardTitle>
         <CardDescription>
-          Chaque parcours payant est aussi disponible en achat unique, entre 500 et 2 500 FCFA. Il
-          reste accessible ensuite, sans abonnement.
+          Chaque parcours payant est aussi disponible en achat unique. Il reste accessible
+          ensuite, sans abonnement.
         </CardDescription>
         <Link href="/parcours" className="mt-4 inline-block">
           <Button variant="secondary" size="sm">
