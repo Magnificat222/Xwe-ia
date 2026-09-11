@@ -38,3 +38,6 @@ next-env.d.ts
 
 # artefacts de vérification (next build lancé hors du .next du serveur de dev)
 /.next-verify/
+
+# Archives générées (ne pas committer)
+*.zip
