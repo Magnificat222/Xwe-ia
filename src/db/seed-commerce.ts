@@ -8,6 +8,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { eq } from "drizzle-orm";
 import * as schema from "./schema";
+import { getConnectionString, getSslConfig } from "./connection";
 
 /**
  * Prix de lancement, alignés sur la grille tarifaire du produit.
@@ -163,8 +164,13 @@ const BADGES = [
 ];
 
 async function main() {
-  const connectionString = process.env.DATABASE_URL ?? "postgres://xwe:xwe@127.0.0.1:5433/xwe";
-  const pool = new Pool({ connectionString });
+  const connectionString = getConnectionString();
+  // TLS indispensable pour amorcer une base managée (Neon, Supabase…).
+  const pool = new Pool({
+    connectionString,
+    ssl: getSslConfig(connectionString),
+    connectionTimeoutMillis: 20_000,
+  });
   const db = drizzle(pool, { schema });
 
   console.log("→ Prix de lancement");

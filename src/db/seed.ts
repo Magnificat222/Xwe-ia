@@ -9,6 +9,7 @@ import { Pool } from "pg";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import * as schema from "./schema";
+import { getConnectionString, getSslConfig } from "./connection";
 import {
   categories as seedCategories,
   pathways as seedPathways,
@@ -22,8 +23,13 @@ import {
 } from "../content/catalogue";
 
 async function main() {
-  const connectionString = process.env.DATABASE_URL ?? "postgres://xwe:xwe@127.0.0.1:5433/xwe";
-  const pool = new Pool({ connectionString });
+  const connectionString = getConnectionString();
+  // TLS indispensable pour amorcer une base managée (Neon, Supabase…).
+  const pool = new Pool({
+    connectionString,
+    ssl: getSslConfig(connectionString),
+    connectionTimeoutMillis: 20_000,
+  });
   const db = drizzle(pool, { schema });
 
   console.log("→ Réglages du site");
