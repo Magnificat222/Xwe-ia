@@ -1,0 +1,115 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { NameForm } from "@/components/settings/name-form";
+import { PasswordForm } from "@/components/settings/password-form";
+import { ThemeSection } from "@/components/settings/theme-section";
+import { FontSection } from "@/components/settings/font-section";
+import { AvatarForm } from "@/components/settings/avatar-form";
+import { DashboardLayoutForm } from "@/components/settings/dashboard-layout-form";
+import { parseDashboardPrefs } from "@/lib/dashboard-prefs";
+import { isPremiumActive } from "@/lib/subscription";
+
+export default async function ProfilePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ verify?: string }>;
+}) {
+  const session = await auth();
+  if (!session?.user?.id) redirect("/login?callbackUrl=/profile");
+
+  const { verify } = await searchParams;
+
+  const [user, subscription] = await Promise.all([
+    prisma.user.findUnique({ where: { id: session.user.id } }),
+    prisma.subscription.findUnique({ where: { userId: session.user.id } }),
+  ]);
+
+  const isPremium = isPremiumActive(subscription);
+  const prefs = parseDashboardPrefs(user?.dashboardPrefs);
+
+  return (
+    <div className="mx-auto max-w-2xl space-y-6">
+      <div>
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-or">Paramètres</p>
+        <h1 className="mt-2 font-display text-3xl text-ivoire">Mon compte</h1>
+      </div>
+
+      {verify === "success" && (
+        <div className="rounded-lg border border-feuillage/30 bg-feuillage-soft/20 px-4 py-3 text-sm text-ivoire">
+          E-mail confirmé — merci !
+        </div>
+      )}
+      {verify === "expired" && (
+        <div className="rounded-lg border border-or/25 bg-or/5 px-4 py-3 text-sm text-ivoire">
+          Ce lien a expiré. Utilisez le bouton ci-dessous pour en recevoir un nouveau.
+        </div>
+      )}
+
+      <Card>
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <p className="font-display text-lg text-ivoire">{user?.name ?? "Sans pseudo"}</p>
+            <p className="text-sm text-ivoire-dim">{user?.email}</p>
+          </div>
+          {isPremium ? <Badge tone="gold">Premium</Badge> : <Badge>Gratuit</Badge>}
+        </div>
+        {!isPremium && (
+          <a href="/#tarifs">
+            <Button size="sm">Passer Premium</Button>
+          </a>
+        )}
+      </Card>
+
+      <Card>
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="font-display text-lg text-ivoire">Xwé Crédits</p>
+            <p className="text-sm text-ivoire-dim">Solde, achats et historique.</p>
+          </div>
+          <a href="/credits"><Button size="sm" variant="secondary">Ouvrir</Button></a>
+        </div>
+      </Card>
+
+      <Card>
+        <p className="mb-3 font-display text-lg text-ivoire">Photo de profil</p>
+        <AvatarForm currentImage={user?.image ?? null} />
+      </Card>
+
+      <Card>
+        <p className="mb-3 font-display text-lg text-ivoire">Pseudo</p>
+        <NameForm initialName={user?.name ?? ""} />
+      </Card>
+
+      <Card>
+        <p className="mb-3 font-display text-lg text-ivoire">Mot de passe</p>
+        <PasswordForm hasPassword={Boolean(user?.password)} />
+      </Card>
+
+      <Card>
+        <p className="mb-3 font-display text-lg text-ivoire">Apparence</p>
+        <ThemeSection />
+      </Card>
+
+      <Card>
+        <p className="mb-1 font-display text-lg text-ivoire">Police de lecture</p>
+        <p className="mb-4 text-sm text-ivoire-dim">
+          Choisissez la police utilisée pour le texte courant du site.
+        </p>
+        <FontSection />
+      </Card>
+
+      <Card>
+        <p className="mb-1 font-display text-lg text-ivoire">Disposition du tableau de bord</p>
+        <p className="mb-4 text-sm text-ivoire-dim">
+          Choisissez les sections que vous voulez voir sur votre tableau de bord.
+        </p>
+        <DashboardLayoutForm initialPrefs={prefs} />
+      </Card>
+    </div>
+  );
+}

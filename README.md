@@ -10,6 +10,11 @@ CRUD admin sur les missions, recherche intelligente, et favoris persistés
 sont tous fonctionnels. Il ne reste plus qu'à créer une base PostgreSQL,
 renseigner les clés dans `.env`, et déployer.
 
+
+> **Paiement (état actuel)** : Kkiapay est suspendu, affiché « bientôt disponible » (`KKIAPAY_COMING_SOON` dans
+> `lib/constants.ts`, route `/api/kkiapay/verify` fermée). Le paiement actif est **MTN Mobile Money / Celtis Money**
+> (demandes validées à la main depuis Admin → Paiements). Les passages décrivant Kkiapay ci-dessous valent pour sa réouverture.
+
 ## Stack
 
 - **Next.js 15** (App Router) + **TypeScript** + **React 19**
